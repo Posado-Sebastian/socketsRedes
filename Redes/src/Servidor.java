@@ -1,77 +1,89 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
+import java.util.*;
 
 public class Servidor {
-    private HashSet<ClienteSusc> clientes;
-    public HashSet<ClienteSusc> getClientes() {return clientes;}
-    public void setClientes(HashSet<ClienteSusc> clientes) {this.clientes = clientes;}
-    public Servidor(HashSet<ClienteSusc> clientes) {this.clientes = clientes;}
-    public Servidor() {this.clientes = null;}
-    public void agregarCliente(InetAddress ip){
-        clientes.add(new ClienteSusc(null, ip));
+    private HashMap<String, HashSet<Socket>> canales;
+
+    public Servidor() {
+        canales = new HashMap<>();
     }
-    public void agregarSus(InetAddress ip, String nuevo) {
-        for (ClienteSusc c : clientes) {
-            if (c.getIp().equals(ip)) {
-                HashSet<String> aux = new HashSet<>(c.getSuscriptos());
-                aux.add(nuevo);
-                c.setSuscriptos(aux);
+    public Servidor(HashMap<String, HashSet<Socket>> canales ){
+        this.canales = canales;
+    }
+
+    public HashMap<String, HashSet<Socket>> getCanales() {return canales;}
+    public void setCanales(HashMap<String, HashSet<Socket>> canales) {this.canales = canales;}
+
+
+    public void agregarSuscripcion(String topic, Socket clienteSocket) {
+        HashSet<Socket> suscriptores = canales.getOrDefault(topic, new HashSet<>());
+        suscriptores.add(clienteSocket);
+        canales.put(topic, suscriptores);
+    }
+
+    public void eliminarSuscripcion(String topic, Socket clienteSocket) {
+        HashSet<Socket> suscriptores = canales.get(topic);
+        suscriptores.remove(clienteSocket);
+        if (suscriptores.isEmpty()) {
+            canales.remove(topic);
+        }
+    }
+
+    public void enviarMensaje(String topic, String mensaje) {
+        HashSet<Socket> suscriptores = canales.get(topic);
+        for (Socket suscriptor : suscriptores) {
+            try {
+                PrintWriter output = new PrintWriter(suscriptor.getOutputStream(), true);
+                output.println(mensaje);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
 
     public static void main(String[] args) {
-        Servidor s=new Servidor();
-        boolean fallo=true;
-        String topic1="Clima";
-        String topic2="Aviso";
-        String topic3="Fecha";
-        try {
-            ServerSocket serverSocket = new ServerSocket(4000); // Puerto del servidor
-            System.out.println("Esperando conexión...");
+        Servidor servidor = new Servidor();
+                try {
+                    ServerSocket serverSocket = new ServerSocket(4001);
+                    System.out.println("Esperando conexión...");
 
-            Socket clientSocket = serverSocket.accept(); // Espera a que un cliente se conecte
-            System.out.println("Cliente conectado.");
+                    while (true) {
+                        Socket clientSocket = serverSocket.accept();
+                        System.out.println("Cliente conectado: " + clientSocket.getInetAddress());
 
-            BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
+                        BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                        PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            String message;
-            while ((message = input.readLine()) != null) {
-                System.out.println("Cliente dice: " + message);
-                if(message.substring(3, message.length())=="s:"){
-                    System.out.println("s");
-                    for(ClienteSusc c:s.getClientes()){
-                        if(clientSocket.getInetAddress()==c.getIp()){
-                            s.agregarSus(c.getIp(), message.substring(2));
-                            fallo=false;
+                        String topic = "";
+                        String mensaje = "";
+                        String mensaje2 = "";
+                        while ((mensaje = input.readLine()) != null) {
+                            System.out.println("Cliente dice: " + mensaje);
+                            if (mensaje.startsWith("s:")) { //suscribirse
+                                topic = mensaje.substring(2);
+                                servidor.agregarSuscripcion(topic, clientSocket);
+                                System.out.println("Suscrito a: " + topic);
+                            } else if (mensaje.startsWith("u:")) { // desuscribir
+                                topic = mensaje.substring(2);
+                                servidor.eliminarSuscripcion(topic, clientSocket);
+                                System.out.println("Desuscrito a: " + topic);
+                            } else if (mensaje.startsWith("m:")) { // mensaje
+                                String[] parts = mensaje.split(":", 3);
+                                topic = parts[1];
+                                mensaje2 = parts[2];
+                                servidor.enviarMensaje(topic, mensaje2);
+                                System.out.println("Mensaje enviado al tema: " + topic + ": " + mensaje2);
+                                servidor.enviarMensaje(topic, mensaje2);
+                            }
                         }
+                        clientSocket.close();
                     }
-                    if(fallo){
-                        s.agregarCliente(clientSocket.getInetAddress());
-                    }
-                } else if (message.contains("m:Clima:")) {
-                    System.out.println("m,1");
-                    output.println(message.substring(2));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                else if (message.contains("m:Aviso:")) {
-                    System.out.println("m,2");
-                    output.println(message.substring(2));
-                }
-                else if (message.contains("m:Fecha")) {
-                    System.out.println("m,3");
-                    output.println(message.substring(2));
-                }
-            }
-            clientSocket.close();
-            serverSocket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
