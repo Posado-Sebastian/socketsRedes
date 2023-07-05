@@ -72,8 +72,9 @@ public class Cliente {
                         }
                     break;
                     case 4:
-                        System.out.println("Mensajes recibidos");
-                        while ((message = input.readLine()) != null) {
+                        System.out.println("Mensajes recibidos:");
+                        while (input.ready()) {
+                            message = input.readLine();
                             if(aux==1) {
                                 System.out.println(message);
                                 aux=0;
@@ -84,7 +85,7 @@ public class Cliente {
                         }
                     break;
                 }
-                Thread.sleep(2500);
+                Thread.sleep(1000);
             }
         } catch (Exception e) {
             e.printStackTrace();
