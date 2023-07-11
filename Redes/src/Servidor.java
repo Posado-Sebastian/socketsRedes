@@ -24,6 +24,14 @@ public class Servidor {
         this.canales = canales;
     }
 
+    public HashSet<String> mostrarTopicos(){
+        HashSet<String> topics=new HashSet<>();
+        for(String s:canales.keySet()){
+            topics.add(s);
+        }
+        return topics;
+    }
+
     public String agregarSuscripcion(String topic, Socket clienteSocket) {
         HashSet<Socket> suscriptores = canales.getOrDefault(topic, new HashSet<>());
         if(suscriptores.contains(clienteSocket)) {
@@ -97,6 +105,11 @@ public class Servidor {
                         servidor.enviarMensaje(topic, mensaje2);
                         System.out.println("Mensaje enviado al tema: " + topic + ": " + mensaje2);
                         servidor.enviarMensaje(topic, mensaje2);
+                    }
+                    else if(mensaje.startsWith("Topics")){
+                        for(String s: servidor.mostrarTopicos()){
+                            output.println(s);
+                        }
                     }
                 }
                 clientSocket.close();

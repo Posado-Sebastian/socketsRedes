@@ -2,16 +2,47 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Cliente {
+    public String Uno(Socket socket, BufferedReader input,  PrintWriter output){
+        Scanner s=new Scanner(System.in);
+        ArrayList<String> topics=new ArrayList<String>();
+        int aux=1;
+        String message="";
+        output.println("Topics");
+        try {
+            while (input.ready()) {
+                message = input.readLine();
+                if (aux == 1) {
+                    topics.add(message);
+                    aux = 0;
+                } else {
+                    aux = 1;
+                }
+            }
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
+        System.out.println("Que topic:");
+        for(int i=0;i<topics.size();i++){
+            System.out.println(i + " = "+topics.get(i));
+        }
+        return topics.get(s.nextInt());
+    }
     public static void main(String[] args) {
         int aux=1;
         String topic="";
         String message=null;
-        String serverAddress = "localhost";
+        String serverAddress = "172.16.255.190";
         Scanner s=new Scanner(System.in);
         int serverPort = 4001;
+        Cliente c=new Cliente();
+
+
+
 
         try {
             Socket socket = new Socket(serverAddress, serverPort);
@@ -29,18 +60,7 @@ public class Cliente {
                 System.out.println("4=Leer mensajes recibidos");
                 switch(s.nextInt()){
                     case 1:
-                        System.out.println("Que topic:");
-                        System.out.println("1=Clima");
-                        System.out.println("2=Fecha");
-                        switch (s.nextInt()){
-                            case 1:
-                                output.println("s:Clima");
-                                break;
-                            case 2:
-                                output.println("s:Fecha");
-                                break;
-                        }
-                        break;
+                        output.println("s:"+c.Uno(socket, input, output));
                     case 2:
                         System.out.println("Que topic:");
                         System.out.println("1=Clima");
