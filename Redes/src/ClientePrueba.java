@@ -6,7 +6,39 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 
-public class Cliente {
+public class ClientePrueba {
+    public String Uno(Socket socket, BufferedReader input,  PrintWriter output){
+        Scanner s=new Scanner(System.in);
+        ArrayList<String> topics=new ArrayList<String>();
+        int aux=1;
+        String message="";
+        output.println("Topics");
+        try {
+            while (input.ready()) {
+                message = input.readLine();
+                System.out.println(message);
+                topics.add(message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        for(String st:topics){
+            System.out.println(st);
+        }
+        System.out.println("Que topic:");
+        String t=s.nextLine();
+        if(topics.contains(t)) {
+            for (int i = 0; i < topics.size(); i++) {
+                System.out.println(i + " = " + topics.get(i));
+            }
+            return topics.get(s.nextInt());
+        }
+        else{
+            System.out.println("No existe, creando...");
+            return t;
+        }
+
+    }
     public static void main(String[] args) {
         int aux=1;
         String topic="";
@@ -14,6 +46,10 @@ public class Cliente {
         String serverAddress = "172.16.255.190";
         Scanner s=new Scanner(System.in);
         int serverPort = 4001;
+        ClientePrueba c=new ClientePrueba();
+
+
+
 
         try {
             Socket socket = new Socket(serverAddress, serverPort);
@@ -31,17 +67,7 @@ public class Cliente {
                 System.out.println("4=Leer mensajes recibidos");
                 switch(s.nextInt()){
                     case 1:
-                        System.out.println("Que topic:");
-                        System.out.println("1=Clima");
-                        System.out.println("2=Fecha");
-                        switch (s.nextInt()){
-                            case 1:
-                                output.println("s:Clima");
-                                break;
-                            case 2:
-                                output.println("s:Fecha");
-                                break;
-                        }
+                        output.println("s:"+c.Uno(socket, input, output));
                         break;
                     case 2:
                         System.out.println("Que topic:");
@@ -55,7 +81,7 @@ public class Cliente {
                                 output.println("u:Fecha");
                                 break;
                         }
-                    break;
+                        break;
                     case 3:
                         System.out.println("Escribir mensaje");
                         s.nextLine(); // Se come el salto de linea
@@ -72,15 +98,20 @@ public class Cliente {
                                 output.println("m:Fecha:"+m);
                                 break;
                         }
-                    break;
+                        break;
                     case 4:
                         System.out.println("Mensajes recibidos:");
                         while (input.ready()) {
                             message = input.readLine();
-                            System.out.println(message);
-
+                            if(aux==1) {
+                                System.out.println(message);
+                                aux=0;
+                            }
+                            else{
+                                aux=1;
+                            }
                         }
-                    break;
+                        break;
                 }
                 Thread.sleep(1000);
             }
