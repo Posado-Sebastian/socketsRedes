@@ -9,7 +9,7 @@ public class Cliente {
         int aux=1;
         String topic="";
         String message=null;
-        String serverAddress = "172.16.255.190";
+        String serverAddress = "localhost";
         Scanner s=new Scanner(System.in);
         int serverPort = 4001;
 

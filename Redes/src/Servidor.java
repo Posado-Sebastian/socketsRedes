@@ -24,16 +24,31 @@ public class Servidor {
         this.canales = canales;
     }
 
-    public void agregarSuscripcion(String topic, Socket clienteSocket) {
+    public String agregarSuscripcion(String topic, Socket clienteSocket) {
         HashSet<Socket> suscriptores = canales.getOrDefault(topic, new HashSet<>());
-        suscriptores.add(clienteSocket);
-        canales.put(topic, suscriptores);
+        if(suscriptores.contains(clienteSocket)) {
+            return "Ya esta suscripto";
+        }
+        else{
+            suscriptores.add(clienteSocket);
+            canales.put(topic, suscriptores);
+            return "Suscripto a: "+topic;
+        }
     }
 
-    public void eliminarSuscripcion(String topic, Socket clienteSocket) {
+    public String eliminarSuscripcion(String topic, Socket clienteSocket) {
         HashSet<Socket> suscriptores = canales.get(topic);
-        if(suscriptores.size()>0) {
-            suscriptores.remove(clienteSocket);
+        if(suscriptores!=null) {
+            if(suscriptores.size()>0) {
+                suscriptores.remove(clienteSocket);
+                return "Desuscripto a: "+topic;
+            }
+            else{
+                return "No esta suscripto";
+            }
+        }
+        else {
+            return "No esta suscripto";
         }
     }
 
@@ -71,12 +86,10 @@ public class Servidor {
                     System.out.println("Cliente dice: " + mensaje);
                     if (mensaje.startsWith("s:")) { //suscribirse
                         topic = mensaje.substring(2);
-                        servidor.agregarSuscripcion(topic, clientSocket);
-                        System.out.println("Suscrito a: " + topic);
+                        System.out.println( servidor.agregarSuscripcion(topic, clientSocket));
                     } else if (mensaje.startsWith("u:")) { // desuscribir
                         topic = mensaje.substring(2);
-                        servidor.eliminarSuscripcion(topic, clientSocket);
-                        System.out.println("Desuscrito a: " + topic);
+                        System.out.println(servidor.eliminarSuscripcion(topic, clientSocket));
                     } else if (mensaje.startsWith("m:")) { // mensaje
                         String[] parts = mensaje.split(":", 3);
                         topic = parts[1];
