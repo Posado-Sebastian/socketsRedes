@@ -30,6 +30,7 @@ public class Cliente {
                 System.out.println("3=Enviar mensaje");
                 System.out.println("4=Leer mensajes recibidos");
                 System.out.println("5=Cambiar nombre");
+                System.out.println("6=Terminar conexion");
                 switch(s.nextInt()){
                     case 1:
                         System.out.println("Que topic:");
@@ -86,7 +87,10 @@ public class Cliente {
                         System.out.println("Elegir nombre");
                         s.nextLine();
                         output.println("nombre:"+s.nextLine());
-                        break;
+                    break;
+                    case 6:
+                        output.println("END");
+                    break;
                 }
                 Thread.sleep(1000);
             }
