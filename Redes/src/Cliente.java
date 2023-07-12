@@ -11,9 +11,10 @@ public class Cliente {
         int aux=1;
         String topic="";
         String message=null;
-        String serverAddress = "172.16.255.190";
+        String serverAddress = "localhost";
         Scanner s=new Scanner(System.in);
         int serverPort = 4001;
+        boolean si=true;
 
         try {
             Socket socket = new Socket(serverAddress, serverPort);
@@ -23,7 +24,7 @@ public class Cliente {
             PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 
 
-            while(true){
+            while(si){
                 System.out.println("Que queres hacer:");
                 System.out.println("1=Suscribirse a un topic");
                 System.out.println("2=Desuscribirese de un topic");
@@ -80,7 +81,6 @@ public class Cliente {
                         while (input.ready()) {
                             message = input.readLine();
                             System.out.println(message);
-
                         }
                     break;
                     case 5:
@@ -90,10 +90,12 @@ public class Cliente {
                     break;
                     case 6:
                         output.println("END");
+                        si=false;
                     break;
                 }
                 Thread.sleep(1000);
             }
+            System.out.println("Conexion terminada, gracias por usar nuestro codigo");
         } catch (Exception e) {
             e.printStackTrace();
         }

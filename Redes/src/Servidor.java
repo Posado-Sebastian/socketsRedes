@@ -144,8 +144,14 @@ public class Servidor {
                 String mensaje = "";
                 String mensaje2 = "";
                 String nombre=null;
-                while ((mensaje = input.readLine()) != null) {
-                    System.out.println("Cliente dice: " + mensaje);
+                boolean si=true;
+                while (si && (mensaje = input.readLine()) != null) {
+                    if(nombre==null) {
+                        System.out.println(clientSocket.getInetAddress() + " dice: " + mensaje);
+                    }
+                    else{
+                        System.out.println(nombre + " dice: " + mensaje);
+                    }
                     if (mensaje.startsWith("s:")) { // suscribirse
                         topic = mensaje.substring(2);
                         System.out.println(servidor.agregarSuscripcion(topic, clientSocket, nombre));
@@ -177,8 +183,9 @@ public class Servidor {
                         }
                         nombre = aux;
                     }
-                    else if(mensaje=="END"){
+                    else if(mensaje.startsWith("END")){
                         clientSocket.close();
+                        si=false;
                     }
                 }
             } catch (Exception e) {
