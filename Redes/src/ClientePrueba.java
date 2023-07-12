@@ -14,7 +14,7 @@ public class ClientePrueba {
         String topic="";
         String message=null;
         String serverAddress = "172.16.255.190";
-        int serverPort = 4003;
+        int serverPort = 4001;
 
         try {
             Socket socket = new Socket(serverAddress, serverPort);

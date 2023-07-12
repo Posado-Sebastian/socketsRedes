@@ -93,33 +93,15 @@ public class Servidor {
         Servidor servidor = new Servidor();
         try {
             ServerSocket serverSocket1 = new ServerSocket(4001);
-            ServerSocket serverSocket2 = new ServerSocket(4002);
-            ServerSocket serverSocket3 = new ServerSocket(4003);
             System.out.println("Esperando conexión...");
 
             while (true) {
-                Thread clientThread1 = null;
-                Thread clientThread2 = null;
-                Thread clientThread3 = null;
-
+                Thread clientThread = null;
                 Socket clientSocket1 = serverSocket1.accept();
                 System.out.println("Cliente " + clientSocket1.getInetAddress() + " conectado");
-                clientThread1 = new Thread(new ClientHandler(clientSocket1, servidor));
-                clientThread1.start();
+                clientThread = new Thread(new ClientHandler(clientSocket1, servidor));
+                clientThread.start();
 
-                if (clientThread1 != null) {
-                    Socket clientSocket2 = serverSocket2.accept();
-                    System.out.println("Cliente " + clientSocket2.getInetAddress() + " conectado");
-                    clientThread2 = new Thread(new ClientHandler(clientSocket2, servidor));
-                    clientThread2.start();
-                }
-
-                if (clientThread2 != null) {
-                    Socket clientSocket3 = serverSocket3.accept();
-                    System.out.println("Cliente " + clientSocket3.getInetAddress() + " conectado");
-                    clientThread3 = new Thread(new ClientHandler(clientSocket3, servidor));
-                    clientThread3.start();
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
