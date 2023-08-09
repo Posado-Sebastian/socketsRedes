@@ -147,10 +147,10 @@ public class Servidor {
                         mensaje2 = parts[2];
                         servidor.enviarMensaje(topic, mensaje2);
                         if(nombre==null) {
-                            System.out.println(clientSocket.getInetAddress()+"envio al tema " + topic + ": " + mensaje2);
+                            System.out.println(clientSocket.getInetAddress()+" envio al tema " + topic + ": " + mensaje2);
                         }
                         else{
-                            System.out.println(nombre+"envio al tema " + topic + ": " + mensaje2);
+                            System.out.println(nombre+" envio al tema " + topic + ": " + mensaje2);
                         }
                     } else if (mensaje.startsWith("Topics")) {
                         for (String s : servidor.mostrarTopicos()) {
@@ -167,10 +167,10 @@ public class Servidor {
                         nombre = aux;
                     } else if (mensaje.startsWith("ack/")) {
                         if(nombre==null) {
-                            System.out.println(clientSocket.getInetAddress()+" recibio el mensaje de forma exitosa");
+                            System.out.println(clientSocket.getInetAddress()+" recibio el mensaje: "+ mensaje +" de forma exitosa");
                         }
                         else{
-                            System.out.println(nombre +" recibio el mensaje de forma exitosa");
+                            System.out.println(nombre +" recibio el mensaje: "+ mensaje +" de forma exitosa");
                         }
                     } else if(mensaje.startsWith("END")){
                         clientSocket.close();
