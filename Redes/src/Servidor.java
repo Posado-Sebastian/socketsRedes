@@ -122,6 +122,7 @@ public class Servidor {
                 BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
 
+                int ack=1;
                 String topic = "";
                 String mensaje = "";
                 String mensaje2 = "";
@@ -164,8 +165,14 @@ public class Servidor {
                             System.out.println(nombre + " ahora sera " + aux);
                         }
                         nombre = aux;
-                    }
-                    else if(mensaje.startsWith("END")){
+                    } else if (mensaje.startsWith("ack/")) {
+                        if(nombre==null) {
+                            System.out.println(clientSocket.getInetAddress()+" recibio el mensaje de forma exitosa");
+                        }
+                        else{
+                            System.out.println(nombre +" recibio el mensaje de forma exitosa");
+                        }
+                    } else if(mensaje.startsWith("END")){
                         clientSocket.close();
                         si=false;
                     }

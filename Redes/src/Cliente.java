@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class Cliente {
     public static void main(String[] args) {
         int aux=1;
+        int akc=1;
         String topic="";
         String message=null;
         String serverAddress = "172.16.255.190";
@@ -81,6 +82,7 @@ public class Cliente {
                         while (input.ready()) {
                             message = input.readLine();
                             System.out.println(message);
+                            output.println("ack/"+message);
                         }
                     break;
                     case 5:

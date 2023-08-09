@@ -29,7 +29,7 @@ public class ClientePrueba {
                     message = input.readLine();
                     System.out.println("Mensaje: " + message);
                     if(message.startsWith("Fecha:hora")){
-                        output.println("m:Fecha:"+LocalDateTime.now());
+                        output.println("m:Fecha:"+LocalDateTime.now().getHour()+":"+LocalDateTime.now().getMinute()+":"+LocalDateTime.now().getSecond());
                     }
                 }
                 Thread.sleep(1000);
