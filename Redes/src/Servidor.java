@@ -167,7 +167,7 @@ public class Servidor {
                         nombre = aux;
                     } else if (mensaje.startsWith("ack/")) {
                         if(nombre==null) {
-                            System.out.println(clientSocket.getInetAddress()+" recibio el mensaje: "+ mensaje +" de forma exitosa");
+                            System.out.println(clientSocket.getInetAddress()+" recibio el mensaje: "+ mensaje.substring(4) +" de forma exitosa");
                         }
                         else{
                             System.out.println(nombre +" recibio el mensaje: "+ mensaje +" de forma exitosa");
