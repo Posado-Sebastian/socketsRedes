@@ -37,18 +37,18 @@ public class Servidor {
         HashSet<Socket> suscriptores = canales.getOrDefault(topic, new HashSet<>());
         if (suscriptores.contains(clienteSocket)) {
             if(nombre==null) {
-                return clienteSocket.getInetAddress() + " ya está suscripto";
+                return clienteSocket.getInetAddress() + " YA ESTÁ SUSCRIPTO";
             }else{
-                return nombre + " ya está suscripto";
+                return nombre + " YA ESTÁ SUSCRIPTO";
             }
         } else {
             suscriptores.add(clienteSocket);
             canales.put(topic, suscriptores);
             if(nombre==null) {
-                return clienteSocket.getInetAddress() + " suscripto a: " + topic;
+                return clienteSocket.getInetAddress() + " SUSCRIPTO A: " + topic;
             }
             else{
-                return nombre + " suscripto a: " + topic;
+                return nombre + " SUSCRIPTO A: " + topic;
             }
         }
     }
@@ -59,18 +59,18 @@ public class Servidor {
             if(suscriptores.contains(clienteSocket)) {
                 suscriptores.remove(clienteSocket);
                 if(nombre==null) {
-                    return clienteSocket.getInetAddress() + " desuscripto a: " + topic;
+                    return clienteSocket.getInetAddress() + " DESUSCRIPTO A: " + topic;
                 }
                 else{
-                    return nombre + " desuscripto a: " + topic;
+                    return nombre + " DESUSCRIPTO A: " + topic;
                 }
             }
             else{
-                return "No está suscripto";
+                return "NO ESTÁ SUSCRIPTO";
             }
 
         } else {
-            return "No está suscripto";
+            return "NO ESTÁ SUSCRIPTO";
         }
     }
 
@@ -98,7 +98,7 @@ public class Servidor {
             while (true) {
                 Thread clientThread = null;
                 Socket clientSocket1 = serverSocket1.accept();
-                System.out.println("Cliente " + clientSocket1.getInetAddress() + " conectado");
+                System.out.println("CLIENTE " + clientSocket1.getInetAddress() + " CONECTADO");
                 clientThread = new Thread(new ClientHandler(clientSocket1, servidor));
                 clientThread.start();
 
@@ -121,7 +121,7 @@ public class Servidor {
             try {
                 BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
-
+                LoggerPro l=new LoggerPro();
                 int ack=1;
                 String topic = "";
                 String mensaje = "";
@@ -130,27 +130,27 @@ public class Servidor {
                 boolean si=true;
                 while (si && (mensaje = input.readLine()) != null) {
                     if(nombre==null) {
-                        System.out.println(clientSocket.getInetAddress() + " dice: " + mensaje);
+                        l.escribir(clientSocket.getInetAddress() + " DICE: " + mensaje);
                     }
                     else{
-                        System.out.println(nombre + " dice: " + mensaje);
+                        l.escribir(nombre + " DICE: " + mensaje);
                     }
                     if (mensaje.startsWith("s:")) { // suscribirse
                         topic = mensaje.substring(2);
-                        System.out.println(servidor.agregarSuscripcion(topic, clientSocket, nombre));
+                        l.escribir(servidor.agregarSuscripcion(topic, clientSocket, nombre));
                     } else if (mensaje.startsWith("u:")) { // desuscribir
                         topic = mensaje.substring(2);
-                        System.out.println(servidor.eliminarSuscripcion(topic, clientSocket, nombre));
+                        l.escribir(servidor.eliminarSuscripcion(topic, clientSocket, nombre));
                     } else if (mensaje.startsWith("m:")) { // mensaje
                         String[] parts = mensaje.split(":", 3);
                         topic = parts[1];
                         mensaje2 = parts[2];
                         servidor.enviarMensaje(topic, mensaje2);
                         if(nombre==null) {
-                            System.out.println(clientSocket.getInetAddress()+" envio al tema " + topic + ": " + mensaje2);
+                            l.escribir(clientSocket.getInetAddress()+" ENVÍO AL TEMA " + topic + ": " + mensaje2);
                         }
                         else{
-                            System.out.println(nombre+" envio al tema " + topic + ": " + mensaje2);
+                            l.escribir(nombre+" ENVÍO AL TEMA " + topic + ": " + mensaje2);
                         }
                     } else if (mensaje.startsWith("Topics")) {
                         for (String s : servidor.mostrarTopicos()) {
@@ -159,18 +159,18 @@ public class Servidor {
                     } else if (mensaje.startsWith("nombre:")) {
                         String aux = mensaje.substring(7);
                         if(nombre==null) {
-                            System.out.println(clientSocket.getInetAddress()+" ahora sera " + aux);
+                            l.escribir(clientSocket.getInetAddress()+" AHORA SERÁ " + aux);
                         }
                         else{
-                            System.out.println(nombre + " ahora sera " + aux);
+                            l.escribir(nombre + " AHORA SERÁ: " + aux);
                         }
                         nombre = aux;
                     } else if (mensaje.startsWith("ack/")) {
                         if(nombre==null) {
-                            System.out.println(clientSocket.getInetAddress()+" recibio el mensaje: "+ mensaje.substring(4) +" de forma exitosa");
+                            l.escribir(clientSocket.getInetAddress()+" RECIBÍO EL MENSAJE: "+ mensaje.substring(4) +" DE FORMA EXITOSA");
                         }
                         else{
-                            System.out.println(nombre +" recibio el mensaje: "+ mensaje +" de forma exitosa");
+                            l.escribir(nombre +" RECIBÍO EL MENSAJE: "+ mensaje +" DE FROMA EXITOSA");
                         }
                     } else if(mensaje.startsWith("END")){
                         clientSocket.close();
