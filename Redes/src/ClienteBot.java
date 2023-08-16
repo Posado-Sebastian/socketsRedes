@@ -8,12 +8,12 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 
-public class ClientePrueba {
+public class ClienteBot {
     public static void main(String[] args) {
         int aux=1;
         String topic="";
         String message=null;
-        String serverAddress = "172.16.255.190";
+        String serverAddress = "localhost";
         int serverPort = 4001;
 
         try {

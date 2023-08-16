@@ -28,27 +28,28 @@ public class Servidor {
     public HashSet<String> mostrarTopicos() {
         HashSet<String> topics = new HashSet<>();
         for (String s : canales.keySet()) {
+            System.out.println("hola");
             topics.add(s);
         }
         return topics;
     }
 
-    public String agregarSuscripcion(String topic, Socket clienteSocket, String nombre) {
+    public String agregarSuscripcion(String topic, Socket clienteSocket, String nickname) {
         HashSet<Socket> suscriptores = canales.getOrDefault(topic, new HashSet<>());
         if (suscriptores.contains(clienteSocket)) {
-            if(nombre==null) {
+            if(nickname==null) {
                 return clienteSocket.getInetAddress() + " YA ESTÁ SUSCRIPTO";
             }else{
-                return nombre + " YA ESTÁ SUSCRIPTO";
+                return nickname + " YA ESTÁ SUSCRIPTO";
             }
         } else {
             suscriptores.add(clienteSocket);
             canales.put(topic, suscriptores);
-            if(nombre==null) {
+            if(nickname==null) {
                 return clienteSocket.getInetAddress() + " SUSCRIPTO A: " + topic;
             }
             else{
-                return nombre + " SUSCRIPTO A: " + topic;
+                return nickname + " SUSCRIPTO A: " + topic;
             }
         }
     }
@@ -74,7 +75,7 @@ public class Servidor {
         }
     }
 
-    public void enviarMensaje(String topic, String mensaje) {
+    public void enviarMensaje(String topic, String mensaje) {//envia mensaje a todos los suscriptos al topico
         HashSet<Socket> suscriptores = canales.get(topic);
         if (suscriptores != null && suscriptores.size() > 0) {
             for (Socket suscriptor : suscriptores) {
@@ -101,14 +102,12 @@ public class Servidor {
  //               System.out.println("CLIENTE " + clientSocket1.getInetAddress() + " CONECTADO");
                 clientThread = new Thread(new ClientHandler(clientSocket1, servidor));
                 clientThread.start();
- //               clientThread.join();
-//                clientThread.destroy();
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    //handler de hilos
     private static class ClientHandler implements Runnable {
         private Socket clientSocket;
         private Servidor servidor;
@@ -124,56 +123,55 @@ public class Servidor {
                 BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
                 LoggerPro l=new LoggerPro();
-                l.escribir("CLIENTE " + clientSocket.getInetAddress() + " CONECTADO");
-                int ack=1;
+                l.escribir("CLIENTE " + clientSocket.getInetAddress() + " CONECTADO");//logger sout
                 String topic = "";
                 String mensaje = "";
                 String mensaje2 = "";
-                String nombre=null;
+                String nickname=null;
                 boolean si=true;
-                while (si && (mensaje = input.readLine()) != null) {
-                    if(nombre==null) {
+                while (si && (mensaje = input.readLine()) != null) {//input.readLine() lee
+                    if(nickname==null) {
                         l.escribir(clientSocket.getInetAddress() + " DICE: " + mensaje);
                     }
                     else{
-                        l.escribir(nombre + " DICE: " + mensaje);
+                        l.escribir(nickname + " DICE: " + mensaje);
                     }
                     if (mensaje.startsWith("s:")) { // suscribirse
                         topic = mensaje.substring(2);
-                        l.escribir(servidor.agregarSuscripcion(topic, clientSocket, nombre));
+                        l.escribir(servidor.agregarSuscripcion(topic, clientSocket, nickname));
                     } else if (mensaje.startsWith("u:")) { // desuscribir
                         topic = mensaje.substring(2);
-                        l.escribir(servidor.eliminarSuscripcion(topic, clientSocket, nombre));
+                        l.escribir(servidor.eliminarSuscripcion(topic, clientSocket, nickname));
                     } else if (mensaje.startsWith("m:")) { // mensaje
                         String[] parts = mensaje.split(":", 3);
                         topic = parts[1];
                         mensaje2 = parts[2];
                         servidor.enviarMensaje(topic, mensaje2);
-                        if(nombre==null) {
+                        if(nickname==null) {
                             l.escribir(clientSocket.getInetAddress()+" ENVÍO AL TEMA " + topic + ": " + mensaje2);
                         }
                         else{
-                            l.escribir(nombre+" ENVÍO AL TEMA " + topic + ": " + mensaje2);
+                            l.escribir(nickname+" ENVÍO AL TEMA " + topic + ": " + mensaje2);
                         }
                     } else if (mensaje.startsWith("Topics")) {
                         for (String s : servidor.mostrarTopicos()) {
                             output.println(s);
                         }
-                    } else if (mensaje.startsWith("nombre:")) {
+                    } else if (mensaje.startsWith("nickname:")) {
                         String aux = mensaje.substring(7);
-                        if(nombre==null) {
+                        if(nickname==null) {
                             l.escribir(clientSocket.getInetAddress()+" AHORA SERÁ " + aux);
                         }
                         else{
-                            l.escribir(nombre + " AHORA SERÁ: " + aux);
+                            l.escribir(nickname + " AHORA SERÁ: " + aux);
                         }
-                        nombre = aux;
+                        nickname = aux;
                     } else if (mensaje.startsWith("ack/")) {
-                        if(nombre==null) {
+                        if(nickname==null) {
                             l.escribir(clientSocket.getInetAddress()+" RECIBÍO EL MENSAJE: "+ mensaje.substring(4) +" DE FORMA EXITOSA");
                         }
                         else{
-                            l.escribir(nombre +" RECIBÍO EL MENSAJE: "+ mensaje +" DE FROMA EXITOSA");
+                            l.escribir(nickname +" RECIBÍO EL MENSAJE: "+ mensaje +" DE FROMA EXITOSA");
                         }
                     } else if(mensaje.startsWith("END")){
                         clientSocket.close();
