@@ -98,9 +98,11 @@ public class Servidor {
             while (true) {
                 Thread clientThread = null;
                 Socket clientSocket1 = serverSocket1.accept();
-                System.out.println("CLIENTE " + clientSocket1.getInetAddress() + " CONECTADO");
+ //               System.out.println("CLIENTE " + clientSocket1.getInetAddress() + " CONECTADO");
                 clientThread = new Thread(new ClientHandler(clientSocket1, servidor));
                 clientThread.start();
+ //               clientThread.join();
+//                clientThread.destroy();
 
             }
         } catch (Exception e) {
@@ -122,6 +124,7 @@ public class Servidor {
                 BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
                 LoggerPro l=new LoggerPro();
+                l.escribir("CLIENTE " + clientSocket.getInetAddress() + " CONECTADO");
                 int ack=1;
                 String topic = "";
                 String mensaje = "";
