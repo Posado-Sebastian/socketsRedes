@@ -1,0 +1,11 @@
+s:  --->  suscribirse a un topic  (ej: s:Clima) se suscribe a clima
+s:  --->  desuscribirse a un topic  (ej: u:Clima) se desuscribe a clima
+m:  --->  envia un mensaje, se debe agregar el tema  (ej: m:Clima:hola ) envia el mensaje "hola" a clima
+
+nickname:  --->  se cambia el nickname para el servidor (ej: nickname:jose) 
+
+Topics  ---> solicita al servidor el nombre de todos los topics
+
+ack/  -->  es el acuse de que recibio el mensaje (ej ack/Clima:hola)  recibio el mensaje "hola" en el topic clima
+
+END  --->  termina la conexion con el server y cierra el zocket

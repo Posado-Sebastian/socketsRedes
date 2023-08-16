@@ -166,7 +166,7 @@ public class Servidor {
                             l.escribir(nickname + " AHORA SERÁ: " + aux);
                         }
                         nickname = aux;
-                    } else if (mensaje.startsWith("ack/")) {
+                    } else if (mensaje.startsWith("ack/")) {  //recibio el mensaje
                         if(nickname==null) {
                             l.escribir(clientSocket.getInetAddress()+" RECIBÍO EL MENSAJE: "+ mensaje.substring(4) +" DE FORMA EXITOSA");
                         }

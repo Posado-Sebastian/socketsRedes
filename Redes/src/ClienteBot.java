@@ -13,7 +13,7 @@ public class ClienteBot {
         int aux=1;
         String topic="";
         String message=null;
-        String serverAddress = "localhost";
+        String serverAddress = "172.16.255.190";
         int serverPort = 4001;
 
         try {
