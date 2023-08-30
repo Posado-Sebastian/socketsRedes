@@ -36,7 +36,6 @@ public class Cliente {
             llaveServidor = Criptografia.stringBase64ToKey(input.readLine());
 
 
-
             while(si){
                 System.out.println("Que queres hacer:");
                 System.out.println("1=Suscribirse a un topic");
