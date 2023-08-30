@@ -3,6 +3,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.KeyPair;
+import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -120,6 +122,8 @@ public class Servidor {
         @Override
         public void run() {
             try {
+                KeyPair keypair = Criptografia.generarLLaves();
+                PublicKey llaveCliente;
                 BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
                 LoggerPro l=new LoggerPro();
@@ -129,6 +133,9 @@ public class Servidor {
                 String mensaje2 = "";
                 String nickname=null;
                 boolean si=true;
+                llaveCliente=Criptografia.stringBase64ToKey(input.readLine());
+                output.println(Criptografia.keyToStringBase64(keypair.getPublic()));
+
                 while (si && (mensaje = input.readLine()) != null) {//input.readLine() lee
                     if(nickname==null) {
                         l.escribir(clientSocket.getInetAddress() + " DICE: " + mensaje);

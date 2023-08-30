@@ -2,12 +2,20 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Scanner;
 
 public class Cliente {
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws Exception {
+        KeyPair keypair = Criptografia.generarLLaves();
+        PublicKey llaveServidor;
         int aux=1;
         int akc=1;
         String topic="";
@@ -23,6 +31,10 @@ public class Cliente {
 
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
+
+            output.println(Criptografia.keyToStringBase64(keypair.getPublic()));
+            llaveServidor = Criptografia.stringBase64ToKey(input.readLine());
+
 
 
             while(si){
@@ -103,8 +115,15 @@ public class Cliente {
                 Thread.sleep(1000);
             }
             System.out.println("Conexion terminada, gracias por usar nuestro codigo");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+
+
     }
+
+
 }
