@@ -56,10 +56,5 @@ public class Criptografia {
         System.out.println("The Encrypted Text is: "+DatatypeConverter.printHexBinary(cipherText));
         String decryptedText = desencriptar(cipherText, keypair.getPrivate());
         System.out.println("The decrypted text is: " + decryptedText);*/
-
-
-
-
-
     }
 }
