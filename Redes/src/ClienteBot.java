@@ -2,8 +2,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -13,7 +16,8 @@ public class ClienteBot {
         int aux=1;
         String topic="";
         String message=null;
-        String serverAddress = "172.16.255.190";
+     //   String serverAddress = "172.16.255.190";
+        String serverAddress = "localhost";
         int serverPort = 4001;
 
         try {
@@ -24,6 +28,16 @@ public class ClienteBot {
             PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
             output.println("nombre:BOT_FECHA");
             output.println("s:Fecha");
+
+
+
+        //    System.out.println(new String(ayuda.getBytes(), StandardCharsets.UTF_8));
+
+
+
+
+
+
             while(true){
                 while (input.ready()) {
                     message = input.readLine();
