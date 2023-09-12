@@ -303,3 +303,72 @@
 2023-09-12 10:14:25 - /127.0.0.1 RECIBÍO EL MENSAJE: Clima DE FORMA EXITOSA
 2023-09-12 10:15:13 - CLIENTE /127.0.0.1 CONECTADO
 2023-09-12 10:15:38 - CLIENTE /127.0.0.1 CONECTADO
+2023-09-12 10:21:36 - CLIENTE /127.0.0.1 CONECTADO
+2023-09-12 10:21:38 - /127.0.0.1 DICE: Topics
+2023-09-12 10:21:38 - /127.0.0.1 DICE: ack/Fecha
+2023-09-12 10:21:38 - /127.0.0.1 RECIBÍO EL MENSAJE: Fecha DE FORMA EXITOSA
+2023-09-12 10:21:38 - /127.0.0.1 DICE: ack/Clima
+2023-09-12 10:21:38 - /127.0.0.1 RECIBÍO EL MENSAJE: Clima DE FORMA EXITOSA
+2023-09-12 10:24:41 - CLIENTE /127.0.0.1 CONECTADO
+2023-09-12 10:24:43 - /127.0.0.1 DICE: s:Clima
+2023-09-12 10:24:43 - /127.0.0.1 SUSCRIPTO A: Clima
+2023-09-12 10:24:51 - /127.0.0.1 DICE: nickname:hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf
+2023-09-12 10:24:51 - /127.0.0.1 AHORA SERÁ hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf
+2023-09-12 10:25:07 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf DICE: m:Clima:dfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+2023-09-12 10:25:07 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf ENVÍO AL TEMA Clima: dfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+2023-09-12 10:25:07 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf DICE: ack/Clima:dfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+2023-09-12 10:25:07 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf RECIBÍO EL MENSAJE: Clima:dfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff DE FROMA EXITOSA
+2023-09-12 10:25:42 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf DICE: m:Clima:
+2023-09-12 10:25:42 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf ENVÍO AL TEMA Clima: 
+2023-09-12 10:25:42 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf DICE: ack/Clima:
+2023-09-12 10:25:42 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf RECIBÍO EL MENSAJE: Clima: DE FROMA EXITOSA
+2023-09-12 10:25:48 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf DICE: Topics
+2023-09-12 10:25:48 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf DICE: ack/Fecha
+2023-09-12 10:25:48 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf RECIBÍO EL MENSAJE: Fecha DE FROMA EXITOSA
+2023-09-12 10:25:48 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf DICE: ack/Clima
+2023-09-12 10:25:48 - hjgdslkjfdhlkjafdlksjhflkjsfhdlksJFHDSLKJFDHLKfdsHLKFDSHFlkdjsHFDLKJSfhdlkjsfhdslkjfHDFDSHFLKDSHflkHhlkdhflkdsjf RECIBÍO EL MENSAJE: Clima DE FROMA EXITOSA
+2023-09-12 10:30:02 - CLIENTE /127.0.0.1 CONECTADO
+2023-09-12 10:30:07 - /127.0.0.1 DICE: nickname:hola
+2023-09-12 10:30:07 - /127.0.0.1 AHORA SERÁ hola
+2023-09-12 10:30:11 - hola DICE: s:Clima
+2023-09-12 10:30:11 - hola SUSCRIPTO A: Clima
+2023-09-12 10:30:24 - hola DICE: nickname:default
+2023-09-12 10:30:24 - hola AHORA SERÁ: default
+2023-09-12 10:30:27 - default DICE: s:Clima
+2023-09-12 10:30:27 - default YA ESTÁ SUSCRIPTO
+2023-09-12 10:31:01 - CLIENTE /127.0.0.1 CONECTADO
+2023-09-12 10:31:05 - /127.0.0.1 DICE: nickname:hola
+2023-09-12 10:31:05 - /127.0.0.1 AHORA SERÁ hola
+2023-09-12 10:31:12 - hola DICE: s:Clima
+2023-09-12 10:31:12 - hola SUSCRIPTO A: Clima
+2023-09-12 10:31:17 - hola DICE: nickname:default
+2023-09-12 10:31:17 - hola AHORA SERÁ: default
+2023-09-12 10:31:27 - default DICE: s:Clima
+2023-09-12 10:31:27 - default YA ESTÁ SUSCRIPTO
+2023-09-12 10:34:38 - CLIENTE /127.0.0.1 CONECTADO
+2023-09-12 10:34:42 - /127.0.0.1 DICE: nickname:hola
+2023-09-12 10:34:42 - /127.0.0.1 AHORA SERÁ: hola
+2023-09-12 10:34:45 - hola DICE: s:Clima
+2023-09-12 10:34:45 - hola SUSCRIPTO A: Clima
+2023-09-12 10:34:53 - hola DICE: nickname:default
+2023-09-12 10:34:53 - hola AHORA SERÁ: default
+2023-09-12 10:34:59 - default DICE: s:Clima
+2023-09-12 10:34:59 - default YA ESTÁ SUSCRIPTO
+2023-09-12 10:35:37 - CLIENTE /127.0.0.1 CONECTADO
+2023-09-12 10:35:44 - CLIENTE /127.0.0.1 CONECTADO
+2023-09-12 10:35:52 - /127.0.0.1 DICE: nickname:hola
+2023-09-12 10:35:52 - /127.0.0.1 AHORA SERÁ: hola
+2023-09-12 10:35:55 - hola DICE: s:Clima
+2023-09-12 10:35:55 - hola SUSCRIPTO A: Clima
+2023-09-12 10:36:04 - hola DICE: nickname:default
+2023-09-12 10:36:04 - hola AHORA SERÁ: default
+2023-09-12 10:36:43 - CLIENTE /127.0.0.1 CONECTADO
+2023-09-12 10:36:44 - CLIENTE /127.0.0.1 CONECTADO
+2023-09-12 10:36:49 - /127.0.0.1 DICE: nickname:hola
+2023-09-12 10:36:49 - /127.0.0.1 AHORA SERÁ: hola
+2023-09-12 10:36:52 - hola DICE: s:Clima
+2023-09-12 10:36:52 - hola SUSCRIPTO A: Clima
+2023-09-12 10:36:59 - hola DICE: nickname:default
+2023-09-12 10:36:59 - hola AHORA SERÁ: default
+2023-09-12 10:37:02 - /127.0.0.1 DICE: s:Clima
+2023-09-12 10:37:02 - /127.0.0.1 YA ESTÁ SUSCRIPTO

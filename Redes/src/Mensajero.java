@@ -37,12 +37,10 @@ public class Mensajero {
         String mensaje=parts[1];
         //Mensaje
         byte[] aux = Criptografia.base64ToByte(mensaje);
-        System.out.println(aux.length);
         mensaje = Criptografia.desencriptar(aux, keypair.getPrivate());
         //Firma
         firma=Integer.toString(mensaje.hashCode());
         byte[] aux2 = Criptografia.base64ToByte(firmaRecibida);
-        System.out.println(aux2.length);
         String aux3 = Criptografia.desencriptarFirma(aux2, publicKey);
         if(firma.equals(aux3)){
             return mensaje;

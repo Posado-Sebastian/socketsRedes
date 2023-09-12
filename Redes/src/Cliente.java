@@ -46,8 +46,9 @@ public class Cliente {
                         System.out.println("2=Desuscribirese de un topic");
                         System.out.println("3=Enviar mensaje");
                         System.out.println("4=Cambiar nombre");
-                        System.out.println("5=Recibir topicos");
-                        System.out.println("6=Terminar conexion");
+                        System.out.println("5=Borrar nombre");
+                        System.out.println("6=Recibir topicos");
+                        System.out.println("7=Terminar conexion");
                         switch(s.nextInt()){
                             case 1:
                                 System.out.println("Que topic:");
@@ -98,9 +99,12 @@ public class Cliente {
                                 Mensajero.enviarMensaje("nickname:"+s.nextLine(), llaveServidor, keypair,socket);
                                 break;
                             case 5:
-                                Mensajero.enviarMensaje("Topics", llaveServidor, keypair, socket);
+                                Mensajero.enviarMensaje("nickname:default", llaveServidor, keypair,socket);
                                 break;
                             case 6:
+                                Mensajero.enviarMensaje("Topics", llaveServidor, keypair, socket);
+                                break;
+                            case 7:
                                 Mensajero.enviarMensaje("END", llaveServidor, keypair, socket);
                                 si=false;
                                 break;
@@ -115,26 +119,20 @@ public class Cliente {
             }
             private static class ClientHandler2 implements Runnable {
                 private BufferedReader input;
-                private PrintWriter output;
-                private Cliente cliente;
                 private Socket socket;
                 private PublicKey llave;
                 private KeyPair keyPair;
 
                 public ClientHandler2( BufferedReader input2, PrintWriter output2, Cliente cliente, Socket socket, PublicKey llave, KeyPair keyPair) {
                     this.input = input2;
-                    this.output = output2;
-                    this.cliente=cliente;
                     this.socket=socket;
                     this.llave=llave;
                     this.keyPair=keyPair;
                 }
-
                 @Override
                 public void run() {
                     try {
-                        byte[] aux;
-                        String mensaje="";
+                        String mensaje;
                         while ((mensaje = input.readLine()) != null) {
                             mensaje=Mensajero.recibirMensaje(mensaje,keyPair,llave);
                             System.err.println(mensaje);

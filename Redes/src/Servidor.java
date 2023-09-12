@@ -10,6 +10,8 @@ import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import static jdk.nashorn.internal.objects.NativeString.substring;
+
 public class Servidor {
     private HashMap<String, HashSet<Socket>> canales;
     public Servidor() {
@@ -169,19 +171,29 @@ public class Servidor {
                         }
                     } else if (mensaje.startsWith("nickname:")) {
                         String aux2 = mensaje.substring(9);
-                        if(nickname==null) {
-                            l.escribir(clientSocket.getInetAddress()+" AHORA SERÁ " + aux2);
+                        if(!aux2.equals("default")) {
+                            if (nickname == null) {
+                                l.escribir(clientSocket.getInetAddress() + " AHORA SERÁ: " + aux2);
+                            } else {
+                                l.escribir(nickname + " AHORA SERÁ: " + aux2);
+                            }
+                            nickname = aux2;
                         }
                         else{
-                            l.escribir(nickname + " AHORA SERÁ: " + aux2);
+                            if(nickname==null){
+                                l.escribir(clientSocket.getInetAddress()+ " AHORA SERÁ: " + clientSocket.getInetAddress());
+                            }
+                            else{
+                                l.escribir(nickname + " AHORA SERÁ: "+clientSocket.getInetAddress());
+                            }
+                            nickname=null;
                         }
-                        nickname = aux2;
                     } else if (mensaje.startsWith("ack/")) {  //recibio el mensaje
                         if(nickname==null) {
                             l.escribir(clientSocket.getInetAddress()+" RECIBÍO EL MENSAJE: "+ mensaje.substring(4) +" DE FORMA EXITOSA");
                         }
                         else{
-                            l.escribir(nickname +" RECIBÍO EL MENSAJE: "+ mensaje +" DE FROMA EXITOSA");
+                            l.escribir(nickname +" RECIBÍO EL MENSAJE: "+ substring(mensaje, 4) +" DE FROMA EXITOSA");
                         }
                     } else if(mensaje.startsWith("END")){
                         clientSocket.close();
