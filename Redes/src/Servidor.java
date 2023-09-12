@@ -3,13 +3,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import static jdk.nashorn.internal.objects.NativeString.substring;
 
 public class Servidor {
@@ -88,7 +85,6 @@ public class Servidor {
             }
         }
     }
-
     public static void main(String[] args) {
         int aux=0;
         Servidor servidor = new Servidor();
