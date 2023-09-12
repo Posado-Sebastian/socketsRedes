@@ -12,23 +12,18 @@ import java.util.HashSet;
 
 public class Servidor {
     private HashMap<String, HashSet<Socket>> canales;
-
     public Servidor() {
         canales = new HashMap<>();
     }
-
     public Servidor(HashMap<String, HashSet<Socket>> canales) {
         this.canales = canales;
     }
-
     public HashMap<String, HashSet<Socket>> getCanales() {
         return canales;
     }
-
     public void setCanales(HashMap<String, HashSet<Socket>> canales) {
         this.canales = canales;
     }
-
     public HashSet<String> mostrarTopicos() {
         HashSet<String> topics = new HashSet<>();
         for (String s : canales.keySet()) {
@@ -37,7 +32,6 @@ public class Servidor {
         }
         return topics;
     }
-
     public String agregarSuscripcion(String topic, Socket clienteSocket, String nickname) {
         HashSet<Socket> suscriptores = canales.getOrDefault(topic, new HashSet<>());
         if (suscriptores.contains(clienteSocket)) {
@@ -57,7 +51,6 @@ public class Servidor {
             }
         }
     }
-
     public String eliminarSuscripcion(String topic, Socket clienteSocket, String nombre) {
         HashSet<Socket> suscriptores = canales.get(topic);
         if (suscriptores != null) {
@@ -78,30 +71,7 @@ public class Servidor {
             return "NO ESTÁ SUSCRIPTO";
         }
     }
-    public String recibirMensaje(String mensaje1, String mensaje2, KeyPair keypair, PublicKey publicKey) throws Exception {
-        String firma;
-        String firmaRecibida=mensaje1;
-        String mensaje=mensaje2;
-        //Mensaje
-        byte[] aux = Criptografia.base64ToByte(mensaje);
-        System.out.println(aux.length);
-        mensaje = Criptografia.desencriptar(aux, keypair.getPrivate());
-        //Firma
-        firma=Integer.toString(mensaje.hashCode());
-        byte[] aux2 = Criptografia.base64ToByte(firmaRecibida);
-        System.out.println(aux2.length);
-        String aux3 = Criptografia.desencriptarFirma(aux2, publicKey);
-
-        if(firma.equals(aux3)){
-            return mensaje;
-        }
-        else{
-            System.out.println("Error");
-            return null;
-        }
-    }
-
-    public void enviarMensaje(String topic, String mensaje, PublicKey llave) {//envia mensaje a todos los suscriptos al topico
+    public void enviarMensaje(String topic, String mensaje, PublicKey llave, KeyPair keyPair) {//envia mensaje a todos los suscriptos al topico
         String m;
         HashSet<Socket> suscriptores = canales.get(topic);
         if (suscriptores != null && suscriptores.size() > 0) {
@@ -109,9 +79,7 @@ public class Servidor {
                 try {
                     PrintWriter output = new PrintWriter(suscriptor.getOutputStream(), true);
                     m=(topic + ":" + mensaje);
-                    byte[] concat=m.getBytes(StandardCharsets.UTF_8);
-                    byte[] aux=Criptografia.encriptar(concat, llave);
-                    output.println(Criptografia.byteTobase64(aux));
+                    Mensajero.enviarMensaje(m,llave,keyPair, suscriptor);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -122,6 +90,10 @@ public class Servidor {
     public static void main(String[] args) {
         int aux=0;
         Servidor servidor = new Servidor();
+        HashMap <String, HashSet<Socket>> auxC=new HashMap<>();
+        auxC.put("Clima",new HashSet<>());
+        auxC.put("Fecha",new HashSet<>());
+        servidor.setCanales(auxC);
         try {
             ServerSocket serverSocket1 = new ServerSocket(4001);
             System.out.println("Esperando conexión...");
@@ -149,6 +121,7 @@ public class Servidor {
         @Override
         public void run() {
             try {
+                Mensajero men=new Mensajero();
                 KeyPair keypair = Criptografia.generarLLaves();
                 PublicKey llaveCliente;
                 BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -166,8 +139,7 @@ public class Servidor {
                 output.println(Criptografia.keyToStringBase64(keypair.getPublic()));
                 System.out.println("LLaves compartidas");
                 while (si && (mensaje = input.readLine()) != null) {//input.readLine() lee
-                    mensajep2 = input.readLine();
-                    mensaje=servidor.recibirMensaje(mensaje, mensajep2, keypair, llaveCliente);
+                    mensaje=Mensajero.recibirMensaje(mensaje, keypair, llaveCliente);
                     if(nickname==null) {
                         l.escribir(clientSocket.getInetAddress() + " DICE: " + mensaje);
                     }
@@ -184,7 +156,7 @@ public class Servidor {
                         String[] parts = mensaje.split(":", 3);
                         topic = parts[1];
                         mensaje2 = parts[2];
-                        servidor.enviarMensaje(topic, mensaje2, llaveCliente);
+                        servidor.enviarMensaje(topic, mensaje2, llaveCliente,keypair);
                         if(nickname==null) {
                             l.escribir(clientSocket.getInetAddress()+" ENVÍO AL TEMA " + topic + ": " + mensaje2);
                         }
@@ -193,9 +165,7 @@ public class Servidor {
                         }
                     } else if (mensaje.startsWith("Topics")) {
                         for (String s : servidor.mostrarTopicos()) {
-                            byte[] concat=s.getBytes(StandardCharsets.UTF_8);
-                            byte[] ayuda=Criptografia.encriptar(concat, llaveCliente);
-                            output.println(Criptografia.byteTobase64(ayuda));
+                            Mensajero.enviarMensaje(s,llaveCliente,keypair,clientSocket);
                         }
                     } else if (mensaje.startsWith("nickname:")) {
                         String aux2 = mensaje.substring(9);
@@ -217,8 +187,8 @@ public class Servidor {
                         clientSocket.close();
                         si=false;
                     }
-                    else if(mensaje.startsWith("f:")){
-                        System.out.println(mensaje.substring(2));
+                    else if(mensaje.startsWith("firma")){
+                        System.out.println("Es el");
                     }
                 }
             } catch (Exception e) {
