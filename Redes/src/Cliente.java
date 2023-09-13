@@ -5,25 +5,18 @@ import java.net.Socket;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.Scanner;
-
-
 public class Cliente {
     public Socket socket;
     public Cliente() {}
     public static void main(String[] args) throws Exception {
-                Mensajero men=new Mensajero();
                 KeyPair keypair = Criptografia.generarLLaves();
                 PublicKey llaveServidor;
-                int aux=1;
-                int akc=1;
-                String topic="";
-                String message=null;
                 // String serverAddress = "172.16.255.190";
                 String serverAddress = "localhost";
                 Scanner s=new Scanner(System.in);
                 int serverPort = 4001;
                 boolean si=true;
-                Thread clientThread = null;
+                Thread clientThread = null ;
                 Cliente cliente=new Cliente();
                 try {
                     Socket socket = new Socket(serverAddress, serverPort);
@@ -31,12 +24,11 @@ public class Cliente {
                     System.out.println("Conectado al servidor: " + socket.getInetAddress());
                     BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
-                    output.println(Criptografia.keyToStringBase64(keypair.getPublic()));
-                    llaveServidor = Criptografia.stringBase64ToKey(input.readLine());
+                    output.println(Criptografia.keyToStringBase64(keypair.getPublic()));// Intercambio de llaves
+                    llaveServidor = Criptografia.stringBase64ToKey(input.readLine());   //      =           =
                     clientThread = new Thread(new ClientHandler2(input, output, cliente, socket, llaveServidor, keypair));
                     clientThread.start();
                     while(si){
-                        System.out.println("Que queres hacer:");
                         System.out.println("1=Suscribirse a un topic");
                         System.out.println("2=Desuscribirese de un topic");
                         System.out.println("3=Enviar mensaje");
