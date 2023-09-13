@@ -59,7 +59,7 @@ public class Cliente2 {
                         s.nextLine(); // Se come el salto de linea
                         String m=s.nextLine();
                         System.out.println("Topic:");
-                        Mensajero.enviarMensaje("m:"+m+":"+s.nextLine(), llaveServidor, keypair, socket);
+                        Mensajero.enviarMensaje("m:"+s.nextLine()+":"+m, llaveServidor, keypair, socket);
                     break;
                     case 4:
                         System.out.println("Elegir nombre");

@@ -39,9 +39,9 @@ public class Mensajero {
         mensaje = Criptografia.desencriptar(aux, keypair.getPrivate());     //Lo desencripta
         //Firma
         firma=Integer.toString(mensaje.hashCode());                         //Hace una copia del mesaje hasheado
-        byte[] aux2 = Criptografia.base64ToByte(firmaRecibida);             //Pasa de b a bytes
+        byte[] aux2 = Criptografia.base64ToByte(firmaRecibida);             //Pasa de b64 a bytes
         String aux3 = Criptografia.desencriptarFirma(aux2, publicKey);      //Lo "desfirma"
-        if(firma.equals(aux3)){                                             //Compata la firma con el mensaje hasheado
+        if(firma.equals(aux3)){                                             //Compara la firma con el mensaje hasheado
             return mensaje;
         }
         else{

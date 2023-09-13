@@ -76,7 +76,6 @@ public class Servidor {
         if (suscriptores != null && suscriptores.size() > 0) {
             for (Socket suscriptor : suscriptores) {
                 try {
-                    PrintWriter output = new PrintWriter(suscriptor.getOutputStream(), true);
                     m=(topic + ":" + mensaje);
                     Mensajero.enviarMensaje(m,llave,keyPair, suscriptor);
                 } catch (Exception e) {
@@ -89,8 +88,6 @@ public class Servidor {
         int aux=0;
         Servidor servidor = new Servidor();
         HashMap <String, HashSet<Socket>> auxC=new HashMap<>();
-        auxC.put("Clima",new HashSet<>());
-        auxC.put("Fecha",new HashSet<>());
         servidor.setCanales(auxC);
         try {
             ServerSocket serverSocket1 = new ServerSocket(4001);
