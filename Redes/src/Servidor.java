@@ -84,7 +84,8 @@ public class Servidor {
             }
         }
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        KeyPair keypair = Criptografia.generarLLaves();
         int aux=0;
         Servidor servidor = new Servidor();
         HashMap <String, HashMap<Socket, PublicKey>> auxC=new HashMap<>();
@@ -96,7 +97,7 @@ public class Servidor {
             while (true) {
                 Thread clientThread = null;
                 Socket clientSocket1 = serverSocket1.accept();
-                clientThread = new Thread(new ClientHandler(clientSocket1, servidor));
+                clientThread = new Thread(new ClientHandler(clientSocket1, servidor, keypair));
                 clientThread.start();
             }
         } catch (Exception e) {
@@ -107,17 +108,17 @@ public class Servidor {
     private static class ClientHandler implements Runnable {
         private Socket clientSocket;
         private Servidor servidor;
+        private KeyPair keypair;
 
-        public ClientHandler(Socket clientSocket, Servidor servidor) {
+        public ClientHandler(Socket clientSocket, Servidor servidor, KeyPair keypair) {
             this.clientSocket = clientSocket;
             this.servidor = servidor;
+            this.keypair = keypair;
         }
 
         @Override
         public void run() {
             try {
-                Mensajero men=new Mensajero();
-                KeyPair keypair = Criptografia.generarLLaves();
                 PublicKey llaveCliente;
                 BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
