@@ -10,17 +10,17 @@ import java.util.HashSet;
 import static jdk.nashorn.internal.objects.NativeString.substring;
 
 public class Servidor {
-    private HashMap<String, HashSet<Socket>> canales;
+    private HashMap<String, HashMap<Socket, PublicKey>> canales;
     public Servidor() {
         canales = new HashMap<>();
     }
-    public Servidor(HashMap<String, HashSet<Socket>> canales) {
+    public Servidor(HashMap<String, HashMap<Socket, PublicKey>> canales) {
         this.canales = canales;
     }
-    public HashMap<String, HashSet<Socket>> getCanales() {
+    public HashMap<String, HashMap<Socket, PublicKey>> getCanales() {
         return canales;
     }
-    public void setCanales(HashMap<String, HashSet<Socket>> canales) {
+    public void setCanales(HashMap<String, HashMap<Socket, PublicKey>> canales) {
         this.canales = canales;
     }
     public HashSet<String> mostrarTopicos() {
@@ -31,16 +31,16 @@ public class Servidor {
         }
         return topics;
     }
-    public String agregarSuscripcion(String topic, Socket clienteSocket, String nickname) {
-        HashSet<Socket> suscriptores = canales.getOrDefault(topic, new HashSet<>());
-        if (suscriptores.contains(clienteSocket)) {
+    public String agregarSuscripcion(String topic, Socket clienteSocket, String nickname, PublicKey llave) {
+        HashMap<Socket, PublicKey> suscriptores = canales.getOrDefault(topic, new HashMap<>());
+        if (suscriptores.containsKey(clienteSocket)) {
             if(nickname==null) {
                 return clienteSocket.getInetAddress() + " YA ESTÁ SUSCRIPTO";
             }else{
                 return nickname + " YA ESTÁ SUSCRIPTO";
             }
         } else {
-            suscriptores.add(clienteSocket);
+            suscriptores.put(clienteSocket,llave);
             canales.put(topic, suscriptores);
             if(nickname==null) {
                 return clienteSocket.getInetAddress() + " SUSCRIPTO A: " + topic;
@@ -51,9 +51,9 @@ public class Servidor {
         }
     }
     public String eliminarSuscripcion(String topic, Socket clienteSocket, String nombre) {
-        HashSet<Socket> suscriptores = canales.get(topic);
+        HashMap<Socket, PublicKey> suscriptores = canales.get(topic);
         if (suscriptores != null) {
-            if(suscriptores.contains(clienteSocket)) {
+            if(suscriptores.containsKey(clienteSocket)) {
                 suscriptores.remove(clienteSocket);
                 if(nombre==null) {
                     return clienteSocket.getInetAddress() + " DESUSCRIPTO A: " + topic;
@@ -72,12 +72,12 @@ public class Servidor {
     }
     public void enviarMensaje(String topic, String mensaje, PublicKey llave, KeyPair keyPair) {//envia mensaje a todos los suscriptos al topico
         String m;
-        HashSet<Socket> suscriptores = canales.get(topic);
+        HashMap<Socket, PublicKey> suscriptores = canales.get(topic);
         if (suscriptores != null && suscriptores.size() > 0) {
-            for (Socket suscriptor : suscriptores) {
+            for (Socket suscriptor : suscriptores.keySet()) {
                 try {
                     m=(topic + ":" + mensaje);
-                    Mensajero.enviarMensaje(m,llave,keyPair, suscriptor);
+                    Mensajero.enviarMensaje(m,suscriptores.get(suscriptor),keyPair, suscriptor);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -87,7 +87,7 @@ public class Servidor {
     public static void main(String[] args) {
         int aux=0;
         Servidor servidor = new Servidor();
-        HashMap <String, HashSet<Socket>> auxC=new HashMap<>();
+        HashMap <String, HashMap<Socket, PublicKey>> auxC=new HashMap<>();
         servidor.setCanales(auxC);
         try {
             ServerSocket serverSocket1 = new ServerSocket(4001);
@@ -143,7 +143,7 @@ public class Servidor {
                     }
                     if (mensaje.startsWith("s:")) { // suscribirse
                         topic = mensaje.substring(2);
-                        l.escribir(servidor.agregarSuscripcion(topic, clientSocket, nickname));
+                        l.escribir(servidor.agregarSuscripcion(topic, clientSocket, nickname, llaveCliente));
                     } else if (mensaje.startsWith("u:")) { // desuscribir
                         topic = mensaje.substring(2);
                         l.escribir(servidor.eliminarSuscripcion(topic, clientSocket, nickname));
@@ -191,9 +191,6 @@ public class Servidor {
                     } else if(mensaje.startsWith("END")){
                         clientSocket.close();
                         si=false;
-                    }
-                    else if(mensaje.startsWith("firma")){
-                        System.out.println("Es el");
                     }
                 }
             } catch (Exception e) {

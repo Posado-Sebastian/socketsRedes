@@ -5,8 +5,6 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 public class Mensajero {
-    public Mensajero() {
-    }
     public static String enviarFirma(String me, PrivateKey llave){
         try {
             int m2=(me.hashCode());                                //hashea
@@ -37,10 +35,12 @@ public class Mensajero {
         //Mensaje
         byte[] aux = Criptografia.base64ToByte(mensaje);                    //Lo pase de b64 a bytes
         mensaje = Criptografia.desencriptar(aux, keypair.getPrivate());     //Lo desencripta
+        System.out.println(mensaje);
         //Firma
         firma=Integer.toString(mensaje.hashCode());                         //Hace una copia del mesaje hasheado
         byte[] aux2 = Criptografia.base64ToByte(firmaRecibida);             //Pasa de b64 a bytes
         String aux3 = Criptografia.desencriptarFirma(aux2, publicKey);      //Lo "desfirma"
+        System.out.println(aux3);
         if(firma.equals(aux3)){                                             //Compara la firma con el mensaje hasheado
             return mensaje;
         }

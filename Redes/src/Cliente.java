@@ -11,8 +11,8 @@ public class Cliente {
     public static void main(String[] args) throws Exception {
                 KeyPair keypair = Criptografia.generarLLaves();
                 PublicKey llaveServidor;
-                // String serverAddress = "172.16.255.190";
-                String serverAddress = "localhost";
+                 String serverAddress = "172.16.255.190";
+              //  String serverAddress = "localhost";
                 Scanner s=new Scanner(System.in);
                 int serverPort = 4001;
                 boolean si=true;
@@ -103,31 +103,30 @@ public class Cliente {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+    }
+    private static class ClientHandler2 implements Runnable {
+        private BufferedReader input;
+        private Socket socket;
+        private PublicKey llave;
+        private KeyPair keyPair;
+        public ClientHandler2( BufferedReader input2, PrintWriter output2, Cliente cliente, Socket socket, PublicKey llave, KeyPair keyPair) {
+            this.input = input2;
+            this.socket=socket;
+            this.llave=llave;
+            this.keyPair=keyPair;
+        }
+        @Override
+        public void run() {
+            try {
+                String mensaje;
+                while ((mensaje = input.readLine()) != null) {
+                    mensaje=Mensajero.recibirMensaje(mensaje,keyPair,llave);
+                    System.err.println(mensaje);
+                    Mensajero.enviarMensaje("ack/"+mensaje, llave, keyPair, socket);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            private static class ClientHandler2 implements Runnable {
-                private BufferedReader input;
-                private Socket socket;
-                private PublicKey llave;
-                private KeyPair keyPair;
-
-                public ClientHandler2( BufferedReader input2, PrintWriter output2, Cliente cliente, Socket socket, PublicKey llave, KeyPair keyPair) {
-                    this.input = input2;
-                    this.socket=socket;
-                    this.llave=llave;
-                    this.keyPair=keyPair;
-                }
-                @Override
-                public void run() {
-                    try {
-                        String mensaje;
-                        while ((mensaje = input.readLine()) != null) {
-                            mensaje=Mensajero.recibirMensaje(mensaje,keyPair,llave);
-                            System.err.println(mensaje);
-                            Mensajero.enviarMensaje("ack/"+mensaje, llave, keyPair, socket);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+        }
     }
 }

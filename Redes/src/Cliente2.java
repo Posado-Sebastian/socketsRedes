@@ -12,8 +12,8 @@ public class Cliente2 {
     public static void main(String[] args) throws Exception {
         KeyPair keypair = Criptografia.generarLLaves();
         PublicKey llaveServidor;
-        // String serverAddress = "172.16.255.190";
-        String serverAddress = "localhost";
+         String serverAddress = "172.16.255.190";
+      //  String serverAddress = "localhost";
         Scanner s=new Scanner(System.in);
         int serverPort = 4001;
         boolean si=true;
@@ -60,6 +60,7 @@ public class Cliente2 {
                         String m=s.nextLine();
                         System.out.println("Topic:");
                         Mensajero.enviarMensaje("m:"+s.nextLine()+":"+m, llaveServidor, keypair, socket);
+                        Thread.sleep(1000);
                     break;
                     case 4:
                         System.out.println("Elegir nombre");
@@ -106,6 +107,8 @@ public class Cliente2 {
             try {
                 String mensaje;
                 while ((mensaje = input.readLine()) != null) {
+                    System.out.println("Este");
+                    System.out.println(mensaje);
                     mensaje=Mensajero.recibirMensaje(mensaje,keyPair,llave);
                     System.err.println(mensaje);
                     Mensajero.enviarMensaje("ack/"+mensaje, llave, keyPair, socket);
