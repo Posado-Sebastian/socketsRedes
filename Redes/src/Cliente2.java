@@ -107,8 +107,6 @@ public class Cliente2 {
             try {
                 String mensaje;
                 while ((mensaje = input.readLine()) != null) {
-                    System.out.println("Este");
-                    System.out.println(mensaje);
                     mensaje=Mensajero.recibirMensaje(mensaje,keyPair,llave);
                     System.err.println(mensaje);
                     Mensajero.enviarMensaje("ack/"+mensaje, llave, keyPair, socket);
