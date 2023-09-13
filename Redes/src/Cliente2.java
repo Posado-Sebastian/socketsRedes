@@ -78,6 +78,9 @@ public class Cliente2 {
                         for(String str:topicsSuscriptos){
                             System.err.println(str);
                         }
+                        if(topicsSuscriptos.size()<1){
+                            System.err.println("No se ha suscripto a ninigun topico");
+                        }
                     break;
                     case 8:
                         Mensajero.enviarMensaje("END", llaveServidor, keypair, socket);
