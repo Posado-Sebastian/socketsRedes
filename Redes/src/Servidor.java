@@ -18,12 +18,14 @@ public class Servidor {
     private HashMap<String, HashMap<Socket, SecretKey>> canalesV2;
     public Servidor() {
         canales = new HashMap<>();
-    }
-    public Servidor(HashMap<String, HashMap<Socket, PublicKey>> canales) {
-        this.canales = canales;
+        canalesV2 =new HashMap<>();
     }
     public HashMap<String, HashMap<Socket, PublicKey>> getCanales() {return canales;}
     public HashMap<String, HashMap<Socket, SecretKey>> getCanalesV2() {return canalesV2;}
+    public static HashMap<Socket, HashSet<String>> getMensajesSinACK() {return mensajesSinACK;}
+    public static void setMensajesSinACK(HashMap<Socket, HashSet<String>> mensajesSinACK) {Servidor.mensajesSinACK = mensajesSinACK;}
+    public void setCanalesV2(HashMap<String, HashMap<Socket, SecretKey>> canalesV2) {this.canalesV2 = canalesV2;}
+
     public void setCanales(HashMap<String, HashMap<Socket, PublicKey>> canales) {
         this.canales = canales;
     }
@@ -42,21 +44,32 @@ public class Servidor {
             if(nickname==null) {
                 eleccion=1;
             }
+            else{
+                eleccion=2;
+            }
         } else {
             suscriptores.put(clienteSocket,llave);
             canales.put(topic, suscriptores);
             suscriptoresV2.put(clienteSocket,llaveSimetrica);
             canalesV2.put(topic, suscriptoresV2);
             if(nickname==null) {
-                eleccion=1;
-
+                eleccion=3;
+            }
+            else {
+                eleccion=4;
             }
         }
-        if(eleccion==1){
-            return clienteSocket.getInetAddress() + " SUSCRIPTO A: " + topic;
-        }
-        else{
-            return nickname + " SUSCRIPTO A: " + topic;
+        switch (eleccion){
+            case 1:
+                return clienteSocket.getInetAddress() + " YA ESTA SUSCRIPTO A: " + topic;
+            case 2:
+                return nickname + " YA ESTA SUSCRIPTO A: " + topic;
+            case 3:
+                return clienteSocket.getInetAddress() + " SUSCRIPTO A: " + topic;
+            case 4:
+                return nickname + " SUSCRIPTO A: " + topic;
+            default:
+                return "Error";
         }
     }
     public String eliminarSuscripcion(String topic, Socket clienteSocket, String nombre) {
