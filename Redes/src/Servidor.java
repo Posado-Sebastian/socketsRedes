@@ -229,10 +229,10 @@ public class Servidor {
                         clientSocket.close();
                         si=false;
                     } else if (mensaje.startsWith("SIN")) {
-                        for(Map.Entry<Socket, HashSet<String>> entry:Servidor.mensajesSinACK.entrySet()){
-                            System.out.println(entry.getKey().getInetAddress());
-                            for(String s:entry.getValue()){
-                                System.out.println(s);
+                        for(Socket s:Servidor.mensajesSinACK.keySet()){
+                            System.out.println(s.getInetAddress());
+                            for(String str:Servidor.mensajesSinACK.get(s)){
+                                System.out.println(str);
                             }
                         }
                     }
