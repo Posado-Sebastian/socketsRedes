@@ -90,6 +90,9 @@ public class Cliente2 {
                         Mensajero.enviarMensajeSimetrico("END", llaveSimetrica , socket, keypair);
                         si=false;
                     break;
+                    case 9:
+                        Mensajero.enviarMensajeSimetrico("SIN", llaveSimetrica, socket, keypair);
+                    break;
                 }
             }
             System.out.println("Conexion terminada, gracias por usar nuestro codigo");
@@ -118,7 +121,7 @@ public class Cliente2 {
                 while ((mensaje = input.readLine()) != null) {
                     mensaje=Mensajero.recibirMensajeSimetrico(mensaje,llaveSecreta, llave);
                     System.err.println(mensaje);
-                    Mensajero.enviarMensajeSimetrico("ack/"+mensaje, llaveSecreta, socket, keyPair);
+                    //Mensajero.enviarMensajeSimetrico("ack/"+mensaje, llaveSecreta, socket, keyPair);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

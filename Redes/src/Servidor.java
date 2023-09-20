@@ -8,9 +8,12 @@ import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+
 import static jdk.nashorn.internal.objects.NativeString.substring;
 
 public class Servidor {
+    private  static HashMap<Socket, HashSet<String>> mensajesSinACK=new HashMap<>();
     private HashMap<String, HashMap<Socket, PublicKey>> canales;
     public Servidor() {
         canales = new HashMap<>();
@@ -74,11 +77,22 @@ public class Servidor {
     public void enviarMensaje(String topic, String mensaje, PublicKey llave, KeyPair keyPair, SecretKey secretKey) {//envia mensaje a todos los suscriptos al topico
         String m;
         HashMap<Socket, PublicKey> suscriptores = canales.get(topic);
+        HashSet<String> msj;
         if (suscriptores != null && suscriptores.size() > 0) {
             for (Socket suscriptor : suscriptores.keySet()) {
                 try {
                     m=(topic + ":" + mensaje);
                     Mensajero.enviarMensajeSimetrico(m,secretKey, suscriptor, keyPair);
+                    if(Servidor.mensajesSinACK.size()<=0){
+                        msj=new HashSet<>();
+                        msj.add(m);
+                        Servidor.mensajesSinACK.put(suscriptor, msj);
+                    }
+                    else {
+                        msj = Servidor.mensajesSinACK.get(suscriptor);
+                        msj.add(m);
+                        Servidor.mensajesSinACK.put(suscriptor, msj);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -185,6 +199,7 @@ public class Servidor {
                             nickname=null;
                         }
                     } else if (mensaje.startsWith("ack/")) {  //recibio el mensaje
+                        Servidor.mensajesSinACK.get(clientSocket).remove(mensaje.substring(4));
                         if(nickname==null) {
                             l.escribir(clientSocket.getInetAddress()+" RECIBÍO EL MENSAJE: "+ mensaje.substring(4) +" DE FORMA EXITOSA");
                         }
@@ -194,6 +209,13 @@ public class Servidor {
                     } else if(mensaje.startsWith("END")){
                         clientSocket.close();
                         si=false;
+                    } else if (mensaje.startsWith("SIN")) {
+                        for(Map.Entry<Socket, HashSet<String>> entry:Servidor.mensajesSinACK.entrySet()){
+                            System.out.println(entry.getKey().getInetAddress());
+                            for(String s:entry.getValue()){
+                                System.out.println(s);
+                            }
+                        }
                     }
                 }
             } catch (Exception e) {
