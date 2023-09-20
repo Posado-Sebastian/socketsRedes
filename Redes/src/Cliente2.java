@@ -1,3 +1,4 @@
+import javax.crypto.SecretKey;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -12,8 +13,9 @@ public class Cliente2 {
     public static void main(String[] args) throws Exception {
         KeyPair keypair = Criptografia.generarLLaves();
         PublicKey llaveServidor;
-         String serverAddress = "172.16.255.190";
-      //  String serverAddress = "localhost";
+        SecretKey llaveSimetrica;
+     //    String serverAddress = "172.16.255.190";
+        String serverAddress = "localhost";
         Scanner s=new Scanner(System.in);
         int serverPort = 4001;
         boolean si=true;
@@ -28,7 +30,9 @@ public class Cliente2 {
             PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
             output.println(Criptografia.keyToStringBase64(keypair.getPublic()));// Intercambio de llaves
             llaveServidor = Criptografia.stringBase64ToKey(input.readLine());   //      =           =
-            clientThread = new Thread(new ClientHandler2(input, socket, llaveServidor, keypair));
+            llaveSimetrica = Criptografia.base64ToSecretKey(Mensajero.recibirMensajeAsimetrico(input.readLine(), keypair, llaveServidor));
+            System.out.println("llaves compartidas");
+            clientThread = new Thread(new ClientHandler2(input, socket, llaveServidor, keypair, llaveSimetrica));
             clientThread.start();
             while(si){
                 System.out.println("1=Suscribirse a un topic");
@@ -44,14 +48,14 @@ public class Cliente2 {
                         System.out.println("Topic:");
                         s.nextLine();
                         String topic=s.nextLine();
-                        Mensajero.enviarMensaje("s:"+topic, llaveServidor, keypair, socket);
+                        Mensajero.enviarMensajeSimetrico("s:"+topic, llaveSimetrica, socket, keypair);
                         topicsSuscriptos.add(topic);
                         break;
                     case 2:
                         System.out.println("Topic:");
                         s.nextLine();
                         String topic2=s.nextLine();
-                        Mensajero.enviarMensaje("u:"+topic2, llaveServidor, keypair, socket);
+                        Mensajero.enviarMensajeSimetrico("u:"+topic2, llaveSimetrica, socket, keypair);
                         topicsSuscriptos.remove(topic2);
                         break;
                     case 3:
@@ -59,19 +63,19 @@ public class Cliente2 {
                         s.nextLine(); // Se come el salto de linea
                         String m=s.nextLine();
                         System.out.println("Topic:");
-                        Mensajero.enviarMensaje("m:"+s.nextLine()+":"+m, llaveServidor, keypair, socket);
+                        Mensajero.enviarMensajeSimetrico("m:"+s.nextLine()+":"+m, llaveSimetrica, socket, keypair);
                         Thread.sleep(1000);
                     break;
                     case 4:
                         System.out.println("Elegir nombre");
                         s.nextLine();
-                        Mensajero.enviarMensaje("nickname:"+s.nextLine(), llaveServidor, keypair,socket);
+                        Mensajero.enviarMensajeSimetrico("nickname:"+s.nextLine(), llaveSimetrica,socket, keypair);
                     break;
                     case 5:
-                        Mensajero.enviarMensaje("nickname:default", llaveServidor, keypair,socket);
+                        Mensajero.enviarMensajeSimetrico("nickname:default", llaveSimetrica,socket, keypair);
                     break;
                     case 6:
-                        Mensajero.enviarMensaje("Topics", llaveServidor, keypair, socket);
+                        Mensajero.enviarMensajeSimetrico("Topics", llaveSimetrica, socket, keypair);
                         Thread.sleep(1000);
                     break;
                     case 7:
@@ -83,7 +87,7 @@ public class Cliente2 {
                         }
                     break;
                     case 8:
-                        Mensajero.enviarMensaje("END", llaveServidor, keypair, socket);
+                        Mensajero.enviarMensajeSimetrico("END", llaveSimetrica , socket, keypair);
                         si=false;
                     break;
                 }
@@ -99,20 +103,22 @@ public class Cliente2 {
         private Socket socket;
         private PublicKey llave;
         private KeyPair keyPair;
-        public ClientHandler2( BufferedReader input2, Socket socket, PublicKey llave, KeyPair keyPair) {
+        private SecretKey llaveSecreta;
+        public ClientHandler2( BufferedReader input2, Socket socket, PublicKey llave, KeyPair keyPair, SecretKey llaveSecreta) {
             this.input = input2;
             this.socket=socket;
             this.llave=llave;
             this.keyPair=keyPair;
+            this.llaveSecreta=llaveSecreta;
         }
         @Override
         public void run() {
             try {
                 String mensaje;
                 while ((mensaje = input.readLine()) != null) {
-                    mensaje=Mensajero.recibirMensaje(mensaje,keyPair,llave);
+                    mensaje=Mensajero.recibirMensajeSimetrico(mensaje,llaveSecreta, llave);
                     System.err.println(mensaje);
-                    Mensajero.enviarMensaje("ack/"+mensaje, llave, keyPair, socket);
+                    Mensajero.enviarMensajeSimetrico("ack/"+mensaje, llaveSecreta, socket, keyPair);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

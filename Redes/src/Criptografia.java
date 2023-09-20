@@ -1,3 +1,4 @@
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
@@ -5,6 +6,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 public class Criptografia {
@@ -27,12 +29,12 @@ public class Criptografia {
         byte[] result= cipher.doFinal(cipherText);
         return new String(result);
     }
-    public static byte[] encriptar(byte[] plainText, PublicKey publicKey) throws Exception {
+    public static byte[] encriptarAsimetrico(byte[] plainText, PublicKey publicKey) throws Exception {
         Cipher cipher = Cipher.getInstance(RSA);
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);//encripta con la pub.key del otro
         return cipher.doFinal(plainText);
     }
-    public static String desencriptar(byte[] cipherText, PrivateKey privateKey) throws Exception {
+    public static String desencriptarAsimetrico(byte[] cipherText, PrivateKey privateKey) throws Exception {
         Cipher cipher = Cipher.getInstance(RSA);
         cipher.init(Cipher.DECRYPT_MODE, privateKey);//desencripta con la priv.key propia
         byte[] result= cipher.doFinal(cipherText);
@@ -58,39 +60,51 @@ public class Criptografia {
         String publicKeyBase64 = Base64.getEncoder().encodeToString(publicK.getEncoded());
         return publicKeyBase64;
     }
-    public static SecretKey generateKey(int n) throws NoSuchAlgorithmException {
+    public static String secretKeyToBase64(SecretKey secretKey) {
+        byte[] keyBytes = secretKey.getEncoded();
+        return Base64.getEncoder().encodeToString(keyBytes);
+    }
+    public static SecretKey base64ToSecretKey(String base64Key) {
+        byte[] keyBytes = Base64.getDecoder().decode(base64Key);
+        return new SecretKeySpec(keyBytes, 0, keyBytes.length, "AES"); // Cambia "AES" por el algoritmo de tu clave secreta
+    }
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+    public static SecretKey generateSecretKey() throws NoSuchAlgorithmException {
+        int n=256;
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(n);
         SecretKey key = keyGenerator.generateKey();
         return key;
     }
-    public static byte[] encriptar2(byte[] plainText, SecretKey secretKey) throws Exception, NoSuchPaddingException {
+    public static byte[] encriptarSimetrico(String plainText, SecretKey secretKey) throws Exception, NoSuchPaddingException {
+        byte[] text=plainText.getBytes();
         Cipher cipher = Cipher.getInstance(AES);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        return cipher.doFinal(plainText);
+        return cipher.doFinal(text);
     }
-    public static String desencriptar2(byte[] cipherText, SecretKey secretKey) throws Exception {
+    public static String desencriptarSimetrico(byte[] cipherText, SecretKey secretKey) throws Exception {
         Cipher cipher = Cipher.getInstance(AES);
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
         byte[] result= cipher.doFinal(cipherText);
         return new String(result);
     }
 
-    public static void main(String[] args) {
-        String msg="mensaje";
+    public static void main(String[] args) throws Exception {
+     /*  SecretKey secretKey= generateSecretKey();
+        String base64Key = secretKeyToBase64(secretKey);
+        SecretKey decodedSecretKey = base64ToSecretKey(base64Key);
+        String msg="hola";
         byte[] msg2;
         System.out.println(msg);
         String msgE=null;
-        try {
-            SecretKey k = generateKey(256);
-            msg2=encriptar2(msg.getBytes(),k);
-            System.out.println(msg2);
-            msgE=desencriptar2(msg2,k);
-            System.out.println(msgE);
-        }catch (NoSuchAlgorithmException e){
-            System.out.println(e.getMessage());
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+        msg2=encriptarSimetrico(msg,decodedSecretKey);
+        System.out.println(msg2);
+        msgE=desencriptarSimetrico(msg2,secretKey);
+        System.out.println(msgE);
+       */
     }
 }

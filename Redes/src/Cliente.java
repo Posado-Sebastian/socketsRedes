@@ -1,3 +1,4 @@
+import javax.crypto.SecretKey;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -11,6 +12,7 @@ public class Cliente {
     public static void main(String[] args) throws Exception {
                 KeyPair keypair = Criptografia.generarLLaves();
                 PublicKey llaveServidor;
+                SecretKey llaveSimetrica;
                  String serverAddress = "172.16.255.190";
               //  String serverAddress = "localhost";
                 Scanner s=new Scanner(System.in);
@@ -43,10 +45,10 @@ public class Cliente {
                                 System.out.println("2=Fecha");
                                 switch (s.nextInt()){
                                     case 1:
-                                        Mensajero.enviarMensaje("s:Clima", llaveServidor, keypair, socket);
+                                        Mensajero.enviarMensajeAsimetrico("s:Clima", llaveServidor, keypair, socket);
                                         break;
                                     case 2:
-                                        Mensajero.enviarMensaje("s:Fecha", llaveServidor, keypair, socket);
+                                        Mensajero.enviarMensajeAsimetrico("s:Fecha", llaveServidor, keypair, socket);
                                         break;
                                 }
                                 break;
@@ -56,10 +58,10 @@ public class Cliente {
                                 System.out.println("2=Fecha");
                                 switch (s.nextInt()){
                                     case 1:
-                                        Mensajero.enviarMensaje("u:Clima", llaveServidor, keypair, socket);
+                                        Mensajero.enviarMensajeAsimetrico("u:Clima", llaveServidor, keypair, socket);
                                         break;
                                     case 2:
-                                        Mensajero.enviarMensaje("u:Fecha", llaveServidor, keypair, socket);
+                                        Mensajero.enviarMensajeAsimetrico("u:Fecha", llaveServidor, keypair, socket);
                                         break;
                                 }
                                 break;
@@ -73,26 +75,26 @@ public class Cliente {
                                 int t=s.nextInt();
                                 switch (t){
                                     case 1:
-                                        Mensajero.enviarMensaje("m:Clima:"+m, llaveServidor, keypair,socket);
+                                        Mensajero.enviarMensajeAsimetrico("m:Clima:"+m, llaveServidor, keypair,socket);
                                         break;
                                     case 2:
-                                        Mensajero.enviarMensaje("m:Fecha:"+m, llaveServidor, keypair, socket);
+                                        Mensajero.enviarMensajeAsimetrico("m:Fecha:"+m, llaveServidor, keypair, socket);
                                         break;
                                 }
                                 break;
                             case 4:
                                 System.out.println("Elegir nombre");
                                 s.nextLine();
-                                Mensajero.enviarMensaje("nickname:"+s.nextLine(), llaveServidor, keypair,socket);
+                                Mensajero.enviarMensajeAsimetrico("nickname:"+s.nextLine(), llaveServidor, keypair,socket);
                                 break;
                             case 5:
-                                Mensajero.enviarMensaje("nickname:default", llaveServidor, keypair,socket);
+                                Mensajero.enviarMensajeAsimetrico("nickname:default", llaveServidor, keypair,socket);
                                 break;
                             case 6:
-                                Mensajero.enviarMensaje("Topics", llaveServidor, keypair, socket);
+                                Mensajero.enviarMensajeAsimetrico("Topics", llaveServidor, keypair, socket);
                                 break;
                             case 7:
-                                Mensajero.enviarMensaje("END", llaveServidor, keypair, socket);
+                                Mensajero.enviarMensajeAsimetrico("END", llaveServidor, keypair, socket);
                                 si=false;
                                 break;
                         }
@@ -120,9 +122,9 @@ public class Cliente {
             try {
                 String mensaje;
                 while ((mensaje = input.readLine()) != null) {
-                    mensaje=Mensajero.recibirMensaje(mensaje,keyPair,llave);
+                    mensaje=Mensajero.recibirMensajeAsimetrico(mensaje,keyPair,llave);
                     System.err.println(mensaje);
-                    Mensajero.enviarMensaje("ack/"+mensaje, llave, keyPair, socket);
+                    Mensajero.enviarMensajeAsimetrico("ack/"+mensaje, llave, keyPair, socket);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

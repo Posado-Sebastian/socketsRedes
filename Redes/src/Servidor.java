@@ -1,3 +1,4 @@
+import javax.crypto.SecretKey;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -70,14 +71,14 @@ public class Servidor {
             return "NO ESTÁ SUSCRIPTO";
         }
     }
-    public void enviarMensaje(String topic, String mensaje, PublicKey llave, KeyPair keyPair) {//envia mensaje a todos los suscriptos al topico
+    public void enviarMensaje(String topic, String mensaje, PublicKey llave, KeyPair keyPair, SecretKey secretKey) {//envia mensaje a todos los suscriptos al topico
         String m;
         HashMap<Socket, PublicKey> suscriptores = canales.get(topic);
         if (suscriptores != null && suscriptores.size() > 0) {
             for (Socket suscriptor : suscriptores.keySet()) {
                 try {
                     m=(topic + ":" + mensaje);
-                    Mensajero.enviarMensaje(m,suscriptores.get(suscriptor),keyPair, suscriptor);
+                    Mensajero.enviarMensajeSimetrico(m,secretKey, suscriptor, keyPair);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -93,7 +94,6 @@ public class Servidor {
         try {
             ServerSocket serverSocket1 = new ServerSocket(4001);
             System.out.println("Esperando conexión...");
-
             while (true) {
                 Thread clientThread = null;
                 Socket clientSocket1 = serverSocket1.accept();
@@ -120,6 +120,7 @@ public class Servidor {
         public void run() {
             try {
                 PublicKey llaveCliente;
+                SecretKey llaveSectreta=Criptografia.generateSecretKey();
                 BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
                 LoggerPro l=new LoggerPro();
@@ -133,9 +134,10 @@ public class Servidor {
                 boolean si=true;
                 llaveCliente=Criptografia.stringBase64ToKey(input.readLine());
                 output.println(Criptografia.keyToStringBase64(keypair.getPublic()));
+                Mensajero.enviarMensajeAsimetrico(Criptografia.secretKeyToBase64(llaveSectreta), llaveCliente,keypair, clientSocket);
                 System.out.println("LLaves compartidas");
                 while (si && (mensaje = input.readLine()) != null) {//input.readLine() lee
-                    mensaje=Mensajero.recibirMensaje(mensaje, keypair, llaveCliente);
+                    mensaje=Mensajero.recibirMensajeSimetrico(mensaje, llaveSectreta, llaveCliente);
                     if(nickname==null) {
                         l.escribir(clientSocket.getInetAddress() + " DICE: " + mensaje);
                     }
@@ -152,7 +154,7 @@ public class Servidor {
                         String[] parts = mensaje.split(":", 3);
                         topic = parts[1];
                         mensaje2 = parts[2];
-                        servidor.enviarMensaje(topic, mensaje2, llaveCliente,keypair);
+                        servidor.enviarMensaje(topic, mensaje2, llaveCliente,keypair, llaveSectreta);
                         if(nickname==null) {
                             l.escribir(clientSocket.getInetAddress()+" ENVÍO AL TEMA " + topic + ": " + mensaje2);
                         }
@@ -161,7 +163,7 @@ public class Servidor {
                         }
                     } else if (mensaje.startsWith("Topics")) {
                         for (String s : servidor.mostrarTopicos()) {
-                            Mensajero.enviarMensaje(s,llaveCliente,keypair,clientSocket);
+                            Mensajero.enviarMensajeSimetrico(s,llaveSectreta,clientSocket, keypair);
                         }
                     } else if (mensaje.startsWith("nickname:")) {
                         String aux2 = mensaje.substring(9);
