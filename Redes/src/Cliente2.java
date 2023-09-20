@@ -14,8 +14,8 @@ public class Cliente2 {
         KeyPair keypair = Criptografia.generarLLaves();
         PublicKey llaveServidor;
         SecretKey llaveSimetrica;
-     //    String serverAddress = "172.16.255.190";
-        String serverAddress = "localhost";
+         String serverAddress = "172.16.255.190";
+     //   String serverAddress = "localhost";
         Scanner s=new Scanner(System.in);
         int serverPort = 4001;
         boolean si=true;
@@ -121,7 +121,7 @@ public class Cliente2 {
                 while ((mensaje = input.readLine()) != null) {
                     mensaje=Mensajero.recibirMensajeSimetrico(mensaje,llaveSecreta, llave);
                     System.err.println(mensaje);
-                    //Mensajero.enviarMensajeSimetrico("ack/"+mensaje, llaveSecreta, socket, keyPair);
+                    Mensajero.enviarMensajeSimetrico("ack/"+mensaje, llaveSecreta, socket, keyPair);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

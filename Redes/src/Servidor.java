@@ -15,22 +15,21 @@ import static jdk.nashorn.internal.objects.NativeString.substring;
 public class Servidor {
     private  static HashMap<Socket, HashSet<String>> mensajesSinACK=new HashMap<>();
     private HashMap<String, HashMap<Socket, PublicKey>> canales;
+    private HashMap<String, HashMap<Socket, SecretKey>> canalesV2;
     public Servidor() {
         canales = new HashMap<>();
     }
     public Servidor(HashMap<String, HashMap<Socket, PublicKey>> canales) {
         this.canales = canales;
     }
-    public HashMap<String, HashMap<Socket, PublicKey>> getCanales() {
-        return canales;
-    }
+    public HashMap<String, HashMap<Socket, PublicKey>> getCanales() {return canales;}
+    public HashMap<String, HashMap<Socket, SecretKey>> getCanalesV2() {return canalesV2;}
     public void setCanales(HashMap<String, HashMap<Socket, PublicKey>> canales) {
         this.canales = canales;
     }
     public HashSet<String> mostrarTopicos() {
         HashSet<String> topics = new HashSet<>();
         for (String s : canales.keySet()) {
-            System.out.println("hola");
             topics.add(s);
         }
         return topics;
@@ -74,15 +73,16 @@ public class Servidor {
             return "NO ESTÁ SUSCRIPTO";
         }
     }
-    public void enviarMensaje(String topic, String mensaje, PublicKey llave, KeyPair keyPair, SecretKey secretKey) {//envia mensaje a todos los suscriptos al topico
+    public void enviarMensaje(String topic, String mensaje, PublicKey llave, KeyPair keyPair) {//envia mensaje a todos los suscriptos al topico
         String m;
         HashMap<Socket, PublicKey> suscriptores = canales.get(topic);
+        HashMap<Socket, SecretKey> suscriptoresV2 = canalesV2.get(topic);
         HashSet<String> msj;
         if (suscriptores != null && suscriptores.size() > 0) {
             for (Socket suscriptor : suscriptores.keySet()) {
                 try {
                     m=(topic + ":" + mensaje);
-                    Mensajero.enviarMensajeSimetrico(m,secretKey, suscriptor, keyPair);
+                    Mensajero.enviarMensajeSimetrico(m,suscriptoresV2.get(suscriptor), suscriptor, keyPair);
                     if(Servidor.mensajesSinACK.size()<=0){
                         msj=new HashSet<>();
                         msj.add(m);
@@ -168,7 +168,7 @@ public class Servidor {
                         String[] parts = mensaje.split(":", 3);
                         topic = parts[1];
                         mensaje2 = parts[2];
-                        servidor.enviarMensaje(topic, mensaje2, llaveCliente,keypair, llaveSectreta);
+                        servidor.enviarMensaje(topic, mensaje2, llaveCliente,keypair);
                         if(nickname==null) {
                             l.escribir(clientSocket.getInetAddress()+" ENVÍO AL TEMA " + topic + ": " + mensaje2);
                         }
