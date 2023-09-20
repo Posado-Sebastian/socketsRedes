@@ -34,23 +34,29 @@ public class Servidor {
         }
         return topics;
     }
-    public String agregarSuscripcion(String topic, Socket clienteSocket, String nickname, PublicKey llave) {
+    public String agregarSuscripcion(String topic, Socket clienteSocket, String nickname, PublicKey llave, SecretKey llaveSimetrica) {
         HashMap<Socket, PublicKey> suscriptores = canales.getOrDefault(topic, new HashMap<>());
+        HashMap<Socket, SecretKey> suscriptoresV2 = canalesV2.getOrDefault(topic, new HashMap<>());
+        int eleccion=0;
         if (suscriptores.containsKey(clienteSocket)) {
             if(nickname==null) {
-                return clienteSocket.getInetAddress() + " YA ESTÁ SUSCRIPTO";
-            }else{
-                return nickname + " YA ESTÁ SUSCRIPTO";
+                eleccion=1;
             }
         } else {
             suscriptores.put(clienteSocket,llave);
             canales.put(topic, suscriptores);
+            suscriptoresV2.put(clienteSocket,llaveSimetrica);
+            canalesV2.put(topic, suscriptoresV2);
             if(nickname==null) {
-                return clienteSocket.getInetAddress() + " SUSCRIPTO A: " + topic;
+                eleccion=1;
+
             }
-            else{
-                return nickname + " SUSCRIPTO A: " + topic;
-            }
+        }
+        if(eleccion==1){
+            return clienteSocket.getInetAddress() + " SUSCRIPTO A: " + topic;
+        }
+        else{
+            return nickname + " SUSCRIPTO A: " + topic;
         }
     }
     public String eliminarSuscripcion(String topic, Socket clienteSocket, String nombre) {
@@ -160,7 +166,7 @@ public class Servidor {
                     }
                     if (mensaje.startsWith("s:")) { // suscribirse
                         topic = mensaje.substring(2);
-                        l.escribir(servidor.agregarSuscripcion(topic, clientSocket, nickname, llaveCliente));
+                        l.escribir(servidor.agregarSuscripcion(topic, clientSocket, nickname, llaveCliente, llaveSectreta));
                     } else if (mensaje.startsWith("u:")) { // desuscribir
                         topic = mensaje.substring(2);
                         l.escribir(servidor.eliminarSuscripcion(topic, clientSocket, nickname));
