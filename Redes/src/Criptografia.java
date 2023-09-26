@@ -40,7 +40,6 @@ public class Criptografia {
         byte[] result= cipher.doFinal(cipherText);
         return new String(result);
     }
-
     public static byte[] base64ToByte(String base64){
         Base64.Decoder dec = Base64.getDecoder();
         return dec.decode(base64);

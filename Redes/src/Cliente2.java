@@ -15,7 +15,7 @@ public class Cliente2 {
         PublicKey llaveServidor;
         SecretKey llaveSimetrica;
         String serverAddress = "172.16.255.190";
-     //   String serverAddress = "localhost";
+       // String serverAddress = "localhost";
         Scanner s=new Scanner(System.in);
         int serverPort = 4001;
         boolean si=true;
@@ -31,7 +31,7 @@ public class Cliente2 {
             output.println(Criptografia.keyToStringBase64(keypair.getPublic()));// Intercambio de llaves
             llaveServidor = Criptografia.stringBase64ToKey(input.readLine());   //      =           =
             llaveSimetrica = Criptografia.base64ToSecretKey(Mensajero.recibirMensajeAsimetrico(input.readLine(), keypair, llaveServidor));
-            System.out.println("llaves compartidas");
+            System.out.println("llaves compartidas con el servidor");
             clientThread = new Thread(new ClientHandler2(input, socket, llaveServidor, keypair, llaveSimetrica));
             clientThread.start();
             while(si){

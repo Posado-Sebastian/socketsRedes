@@ -102,7 +102,7 @@ public class Servidor {
                 try {
                     m=(topic + ":" + mensaje);
                     Mensajero.enviarMensajeSimetrico(m,suscriptoresV2.get(suscriptor), suscriptor, keyPair);
-                    if(Servidor.mensajesSinACK.size()<=0){
+                    if(Servidor.mensajesSinACK==null){
                         msj=new HashSet<>();
                         msj.add(m);
                         Servidor.mensajesSinACK.put(suscriptor, msj);
