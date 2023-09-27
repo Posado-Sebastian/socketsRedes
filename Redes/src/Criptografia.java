@@ -93,7 +93,7 @@ public class Criptografia {
     }
 
     public static void main(String[] args) throws Exception {
-     /*  SecretKey secretKey= generateSecretKey();
+       SecretKey secretKey= generateSecretKey();
         String base64Key = secretKeyToBase64(secretKey);
         SecretKey decodedSecretKey = base64ToSecretKey(base64Key);
         String msg="hola";
@@ -104,6 +104,6 @@ public class Criptografia {
         System.out.println(msg2);
         msgE=desencriptarSimetrico(msg2,secretKey);
         System.out.println(msgE);
-       */
+
     }
 }

@@ -96,7 +96,7 @@ public class Servidor {
         String m;
         HashMap<Socket, PublicKey> suscriptores = canales.get(topic);
         HashMap<Socket, SecretKey> suscriptoresV2 = canalesV2.get(topic);
-        HashSet<String> msj;
+        HashSet<String> msj=new HashSet<>();
         if (suscriptores != null && suscriptores.size() > 0) {
             for (Socket suscriptor : suscriptores.keySet()) {
                 try {

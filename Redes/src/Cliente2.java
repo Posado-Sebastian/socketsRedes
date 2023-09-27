@@ -14,8 +14,8 @@ public class Cliente2 {
         KeyPair keypair = Criptografia.generarLLaves();
         PublicKey llaveServidor;
         SecretKey llaveSimetrica;
-        String serverAddress = "172.16.255.190";
-       // String serverAddress = "localhost";
+      //  String serverAddress = "172.16.255.190";
+        String serverAddress = "localhost";
         Scanner s=new Scanner(System.in);
         int serverPort = 4001;
         boolean si=true;
